@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Home, Database, CreditCard, Settings, LogOut, Bell, UserCircle } from "lucide-react";
+import { Zap, Home, Search, Database, CreditCard, Settings, LogOut, Bell, UserCircle } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 
 export function Sidebar() {
     const pathname = usePathname();
     const routes = [
-        { name: "Search Leads", href: "/dashboard", icon: Home },
-        { name: "Saved Leads", href: "/dashboard/saved", icon: Database },
-        { name: "Billing", href: "/dashboard/billing", icon: CreditCard },
+        { name: "Overview", href: "/dashboard", icon: Home },
+        { name: "Find Leads", href: "/dashboard/search", icon: Search },
+        { name: "Search History", href: "/dashboard/history", icon: Database },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ];
 

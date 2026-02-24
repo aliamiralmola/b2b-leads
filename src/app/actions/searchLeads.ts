@@ -75,6 +75,21 @@ export async function searchLeads(keyword: string, city: string, countryCode: st
             // Non-fatal, return results still but ideally webhook deals with it. 
         }
 
+        // 6. Record Search History
+        const { error: historyError } = await supabase
+            .from('search_history')
+            .insert({
+                user_id: user.id,
+                keyword,
+                location: city,
+                results_count: actualLeadsFound,
+                results_data: formattedLeads,
+            });
+
+        if (historyError) {
+            console.error("Failed to record search history:", historyError);
+        }
+
         // Return both leads and updated credits for the frontend
         return {
             leads: formattedLeads,

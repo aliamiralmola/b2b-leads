@@ -35,24 +35,21 @@ export async function middleware(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    if (
-        !user &&
-        !request.nextUrl.pathname.startsWith('/login') &&
-        !request.nextUrl.pathname.startsWith('/auth') &&
-        request.nextUrl.pathname !== '/'
-    ) {
+    const publicRoutes = ['/login', '/auth', '/privacy', '/terms', '/refund', '/contact']
+    const isPublicRoute = publicRoutes.some(route => request.nextUrl.pathname.startsWith(route)) || request.nextUrl.pathname === '/'
+
+    if (!user && !isPublicRoute) {
         // no user, potentially respond by redirecting the user to the login page
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 
-    if (
-        user && (
-            request.nextUrl.pathname.startsWith('/login') ||
-            request.nextUrl.pathname === '/'
-        )
-    ) {
+    const authRoutes = ['/login'] // Routes that logged-in users shouldn't see
+    const isAuthRoute = authRoutes.some(route => request.nextUrl.pathname.startsWith(route)) ||
+        (request.nextUrl.pathname === '/' && user)
+
+    if (user && isAuthRoute) {
         // user is logged in, redirect away from login/landing page to dashboard
         const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
