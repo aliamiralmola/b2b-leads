@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Home, Search, Database, CreditCard, Settings, LogOut, Bell, UserCircle } from "lucide-react";
+import { Zap, Home, Search, Database, Settings, LogOut, Bell, UserCircle, Users, Share2 } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 
 export function Sidebar() {
@@ -11,6 +11,8 @@ export function Sidebar() {
         { name: "Overview", href: "/dashboard", icon: Home },
         { name: "Find Leads", href: "/dashboard/search", icon: Search },
         { name: "Search History", href: "/dashboard/history", icon: Database },
+        { name: "Team", href: "/dashboard/team", icon: Users },
+        { name: "Affiliates", href: "/dashboard/affiliates", icon: Share2 },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ];
 

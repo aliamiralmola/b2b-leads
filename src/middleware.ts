@@ -68,6 +68,18 @@ export async function middleware(request: NextRequest) {
     // If this is not done, you may be causing the browser and server to go out
     // of sync and terminate the user's session prematurely!
 
+    // Affiliate referral tracking
+    const refCode = request.nextUrl.searchParams.get('ref')
+    if (refCode) {
+        supabaseResponse.cookies.set('affiliate_code', refCode, {
+            maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
+            path: '/',
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+        })
+    }
+
     return supabaseResponse
 }
 
