@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Linkedin, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
+import { MapPin, Linkedin, Sparkles, CheckCircle2, ArrowRight, DollarSign } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -17,6 +17,9 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
+            <Link href="/affiliates" className="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold flex items-center gap-1.5">
+              <DollarSign className="w-3.5 h-3.5" /> Affiliates
+            </Link>
           </nav>
           <div className="flex items-center gap-4">
             <Button variant="ghost" className="hidden md:inline-flex text-zinc-300 hover:text-white hover:bg-white/10" asChild>
@@ -249,6 +252,33 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      {/* Affiliate Teaser Banner */}
+      <section className="relative py-16 border-t border-white/5 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/40 via-black to-teal-950/30 pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] opacity-20 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-500 to-transparent blur-[80px] rounded-full mix-blend-screen" />
+        </div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <div className="inline-flex items-center gap-2 mb-4 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-emerald-400 text-sm font-semibold">
+            <DollarSign className="w-3.5 h-3.5" /> Partner Program
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">
+            Want to earn money?
+          </h2>
+          <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
+            Join our Affiliate Program and earn{" "}
+            <span className="text-emerald-400 font-semibold">50% recurring commission forever</span>{" "}
+            — for every customer you refer.
+          </p>
+          <Link
+            href="/affiliates"
+            className="inline-flex items-center gap-2 h-12 px-8 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-base transition-all shadow-[0_0_25px_-5px_rgba(16,185,129,0.5)] hover:shadow-[0_0_40px_-5px_rgba(16,185,129,0.7)]"
+          >
+            Learn More About Affiliates <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-white/10 bg-black pt-16 pb-8">
