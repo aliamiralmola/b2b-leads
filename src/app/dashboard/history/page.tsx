@@ -44,6 +44,7 @@ export default function HistoryPage() {
     const [loading, setLoading] = useState(true);
     const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isVerified, setIsVerified] = useState<boolean | null>(null);
     const supabase = createClient();
 
     useEffect(() => {
@@ -53,6 +54,12 @@ export default function HistoryPage() {
                 setLoading(false);
                 return;
             }
+            if (!user.email_confirmed_at) {
+                setIsVerified(false);
+                setLoading(false);
+                return;
+            }
+            setIsVerified(true);
 
             const { data, error } = await supabase
                 .from('search_history')
@@ -106,6 +113,20 @@ export default function HistoryPage() {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
             </div>
         );
+    }
+
+    if (isVerified === false) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+                <div className="bg-orange-500/10 p-4 rounded-full mb-4">
+                    <Info className="h-10 w-10 text-orange-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Verification Required</h2>
+                <p className="text-gray-400 max-w-md">
+                    Please verify your email address to view your search history.
+                </p>
+            </div>
+        )
     }
 
     return (

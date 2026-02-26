@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { inviteTeamMember, fetchTeamMembers, removeTeamMember } from '@/app/actions/team';
 import { toast } from 'sonner';
+import { createClient } from '@/utils/supabase/client';
 
 const formSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email address." }),
@@ -21,6 +22,8 @@ export default function TeamPage() {
     const [members, setMembers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isVerified, setIsVerified] = useState<boolean | null>(null);
+    const supabase = createClient();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -31,6 +34,13 @@ export default function TeamPage() {
 
     const loadMembers = async () => {
         try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user?.email_confirmed_at) {
+                setIsVerified(false);
+                setLoading(false);
+                return;
+            }
+            setIsVerified(true);
             const data = await fetchTeamMembers();
             setMembers(data);
         } catch (error) {
@@ -67,6 +77,28 @@ export default function TeamPage() {
         } catch (error) {
             toast.error("Failed to remove member");
         }
+    }
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+            </div>
+        );
+    }
+
+    if (isVerified === false) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+                <div className="bg-orange-500/10 p-4 rounded-full mb-4">
+                    <Users className="h-10 w-10 text-orange-500" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Verification Required</h2>
+                <p className="text-gray-400 max-w-md">
+                    Please verify your email address to access team management features.
+                </p>
+            </div>
+        )
     }
 
     return (

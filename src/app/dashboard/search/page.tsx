@@ -16,12 +16,14 @@ export default function SearchPage() {
     const [leads, setLeads] = useState<any[]>([]);
     const [credits, setCredits] = useState<number | null>(null);
     const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+    const [isVerified, setIsVerified] = useState<boolean | null>(null);
     const supabase = createClient();
 
     useEffect(() => {
         async function fetchCredits() {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
+                setIsVerified(!!user.email_confirmed_at);
                 const { data } = await supabase.from('profiles').select('credits').eq('id', user.id).single();
                 if (data) setCredits(data.credits);
             }
@@ -60,6 +62,18 @@ export default function SearchPage() {
         console.log("Exporting to CSV...", leads);
         alert("Exported to Console. Check developer tools.");
     };
+
+    if (isVerified === false) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-4">
+                <Shield className="h-12 w-12 text-orange-500 mb-4" />
+                <h2 className="text-2xl font-bold text-white">Verification Required</h2>
+                <p className="text-gray-400 max-w-md">
+                    Please verify your email address to access the lead search tool. Check your inbox for the confirmation link.
+                </p>
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-8 animate-in fade-in duration-500">

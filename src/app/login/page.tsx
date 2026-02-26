@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { Terminal } from 'lucide-react'
+import Image from 'next/image'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -86,8 +86,8 @@ export default function LoginPage() {
             if (error) {
                 setErrorMsg(error.message)
             } else if (data?.session === null) {
-                setSuccessMsg("Success! Please check your email to verify your account.")
                 form.reset()
+                router.push(`/verify-notice?email=${encodeURIComponent(values.email)}`)
             } else {
                 router.push('/dashboard')
                 router.refresh()
@@ -109,9 +109,9 @@ export default function LoginPage() {
             </Link>
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
                 <div className="absolute inset-0 bg-zinc-900" />
-                <div className="relative z-20 flex items-center text-lg font-medium">
-                    <Terminal className="mr-2 h-6 w-6" />
-                    Nexus B2B
+                <div className="relative z-20 flex items-center gap-2 text-lg font-medium">
+                    <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
+                    b2bleads
                 </div>
                 <div className="relative z-20 mt-auto">
                     <blockquote className="space-y-2">

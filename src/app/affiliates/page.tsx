@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,9 +17,9 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-    title: "Affiliate Program – Earn 50% Recurring Commission | Nexus B2B",
+    title: "Affiliate Program – Earn 50% Recurring Commission | b2bleads",
     description:
-        "Join the Nexus B2B Affiliate Program and earn 50% recurring commission forever. Promote the world's easiest B2B Lead Scraper and build passive income.",
+        "Join the b2bleads Affiliate Program and earn 50% recurring commission forever. Promote the world's easiest B2B Lead Scraper and build passive income.",
 };
 
 export default function AffiliatesPage() {
@@ -28,10 +29,8 @@ export default function AffiliatesPage() {
             <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-[0_0_15px_rgba(79,70,229,0.5)]">
-                            N
-                        </div>
-                        <span className="font-bold text-xl tracking-tight">Nexus B2B</span>
+                        <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
+                        <span className="font-bold text-xl tracking-tight">b2bleads</span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
@@ -306,10 +305,8 @@ export default function AffiliatesPage() {
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg shadow-[0_0_10px_rgba(79,70,229,0.5)]">
-                                N
-                            </div>
-                            <span className="font-bold text-xl tracking-tight text-white">Nexus B2B</span>
+                            <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
+                            <span className="font-bold text-xl tracking-tight text-white">b2bleads</span>
                         </Link>
                         <div className="flex gap-8 text-sm font-medium text-zinc-400 flex-wrap justify-center">
                             <Link href="/privacy" className="hover:text-white transition-colors">
@@ -324,7 +321,7 @@ export default function AffiliatesPage() {
                         </div>
                     </div>
                     <div className="text-center text-zinc-600 text-sm mt-8">
-                        &copy; {new Date().getFullYear()} Nexus B2B. All rights reserved.
+                        &copy; {new Date().getFullYear()} b2bleads. All rights reserved.
                     </div>
                 </div>
             </footer>

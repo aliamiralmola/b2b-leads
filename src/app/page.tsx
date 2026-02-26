@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Linkedin, Sparkles, CheckCircle2, ArrowRight, DollarSign } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -11,8 +12,8 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-xl shadow-[0_0_15px_rgba(79,70,229,0.5)]">N</div>
-            <span className="font-bold text-xl tracking-tight">Nexus B2B</span>
+            <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
+            <span className="font-bold text-xl tracking-tight text-white">b2bleads</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
@@ -57,14 +58,14 @@ export default function Home() {
                   Start for Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-white/10 text-white hover:bg-white/5 w-full sm:w-auto backdrop-blur-sm">
-                Book a Demo
+              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-white/10 text-white hover:bg-white/5 w-full sm:w-auto backdrop-blur-sm" asChild>
+                <Link href="#pricing">View Pricing</Link>
               </Button>
             </div>
 
             <div className="mt-20 flex items-center justify-center gap-8 text-sm text-zinc-500 font-medium flex-wrap">
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> No credit card required</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> 14-day free trial</div>
+              <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> 10 Free Leads</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> Cancel anytime</div>
             </div>
           </div>
@@ -285,8 +286,8 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg shadow-[0_0_10px_rgba(79,70,229,0.5)]">N</div>
-              <span className="font-bold text-2xl tracking-tight text-white">Nexus B2B</span>
+              <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
+              <span className="font-bold text-2xl tracking-tight text-white">b2bleads</span>
             </div>
 
             <div className="flex gap-8 text-sm font-medium text-zinc-400 flex-wrap justify-center">
@@ -298,7 +299,7 @@ export default function Home() {
           </div>
 
           <div className="text-center text-zinc-600 text-sm">
-            &copy; {new Date().getFullYear()} Nexus B2B. All rights reserved.
+            &copy; {new Date().getFullYear()} b2bleads. All rights reserved.
           </div>
         </div>
       </footer>

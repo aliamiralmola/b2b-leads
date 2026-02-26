@@ -1,8 +1,9 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Zap, Home, Search, Database, Settings, LogOut, Bell, UserCircle, Users, Share2 } from "lucide-react";
+import { Home, Search, Database, Settings, LogOut, Bell, UserCircle, Users, Share2 } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 
 export function Sidebar() {
@@ -20,11 +21,9 @@ export function Sidebar() {
         <aside className="fixed left-0 top-0 h-screen w-64 bg-[#0a0a0a] border-r border-white/5 flex flex-col z-40">
             <div className="h-16 flex items-center px-6 border-b border-white/5">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="flex bg-gradient-to-br from-indigo-500 to-purple-600 rounded-md p-1 shadow-lg shadow-indigo-500/25">
-                        <Zap className="h-4 w-4 text-white" />
-                    </div>
+                    <Image src="/logo.png" alt="b2bleads logo" width={28} height={28} className="object-contain" />
                     <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        Nexus B2B
+                        b2bleads
                     </span>
                 </Link>
             </div>

@@ -6,10 +6,14 @@ import { createClient } from "@/utils/supabase/server";
 export async function searchLeads(keyword: string, city: string, countryCode: string = "us", requestedLimit: number = 10) {
     const supabase = await createClient();
 
-    // 1. Verify Authentication
+    // 1. Verify Authentication & Confirmation
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
         throw new Error("Unauthorized. Please log in.");
+    }
+
+    if (!user.email_confirmed_at) {
+        throw new Error("Please verify your email first.");
     }
 
     // 2. Fetch User Credits

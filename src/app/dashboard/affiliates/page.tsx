@@ -102,7 +102,7 @@ export default function AffiliatePage() {
             <div>
                 <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Affiliate Program</h2>
                 <p className="text-gray-400 max-w-2xl">
-                    Invite others to Nexus B2B and earn commission on every signup.
+                    Invite others to b2bleads and earn commission on every signup.
                 </p>
             </div>
 
@@ -179,8 +179,8 @@ export default function AffiliatePage() {
                                     </td>
                                     <td className="px-6 py-4 text-sm">
                                         <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${row.status === "Active"
-                                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                                            : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                                             }`}>
                                             {row.status}
                                         </span>

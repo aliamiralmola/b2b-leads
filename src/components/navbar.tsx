@@ -1,17 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Zap } from "lucide-react";
 
 export function Navbar() {
     return (
         <header className="fixed top-0 w-full z-50 border-b border-white/10 bg-background/60 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
                 <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
-                    <div className="flex bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg p-1.5 shadow-lg shadow-indigo-500/25">
-                        <Zap className="h-5 w-5 text-white animate-pulse" />
-                    </div>
+                    <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        LeadFlow Pro
+                        b2bleads
                     </span>
                 </Link>
 
