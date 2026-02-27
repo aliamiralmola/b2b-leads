@@ -10,6 +10,7 @@ import {
     LucideIcon
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from 'next/navigation';
 import {
     AreaChart,
     Area,
@@ -29,6 +30,7 @@ interface Stat {
 }
 
 export default function DashboardPage() {
+    const router = useRouter();
     const [stats, setStats] = useState({
         credits: 0,
         totalSearches: 0,
@@ -45,6 +47,11 @@ export default function DashboardPage() {
             try {
                 const { data: { user } } = await supabase.auth.getUser();
                 if (!user) return;
+
+                if (!user.email_confirmed_at) {
+                    router.push(`/verify-notice?email=${encodeURIComponent(user.email || '')}`);
+                    return;
+                }
 
                 // 1. Fetch Credits
                 const { data: profile } = await supabase

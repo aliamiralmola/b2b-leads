@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import Image from 'next/image'
+import { Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -220,7 +221,14 @@ export default function LoginPage() {
                                         )}
                                     />
                                     <Button className="w-full" type="submit" disabled={isLoading}>
-                                        {isLoading ? 'Creating account...' : 'Create Account'}
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Creating account...
+                                            </>
+                                        ) : (
+                                            'Create Account'
+                                        )}
                                     </Button>
                                 </form>
                             </Form>
