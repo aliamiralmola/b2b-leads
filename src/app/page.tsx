@@ -1,11 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Linkedin, Sparkles, CheckCircle2, ArrowRight, DollarSign } from "lucide-react";
+import { MapPin, Linkedin, Sparkles, CheckCircle2, ArrowRight, DollarSign, Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { PLANS, FREE_TRIAL_CREDITS } from "@/lib/plans";
 
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen bg-black text-zinc-50 font-sans selection:bg-indigo-500/30">
       {/* Navbar */}
@@ -15,6 +21,8 @@ export default function Home() {
             <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
             <span className="font-bold text-xl tracking-tight text-white">b2bleads</span>
           </div>
+
+          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
             <Link href="#features" className="hover:text-white transition-colors">Features</Link>
             <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
@@ -22,15 +30,42 @@ export default function Home() {
               <DollarSign className="w-3.5 h-3.5" /> Affiliates
             </Link>
           </nav>
+
           <div className="flex items-center gap-4">
             <Button variant="ghost" className="hidden md:inline-flex text-zinc-300 hover:text-white hover:bg-white/10" asChild>
               <Link href="/login">Log in</Link>
             </Button>
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_0_25px_rgba(79,70,229,0.6)]" asChild>
+            <Button className="hidden md:inline-flex bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_0_25px_rgba(79,70,229,0.6)]" asChild>
               <Link href="/login">Get Started</Link>
             </Button>
+
+            {/* Mobile Menu Toggle (Issue 5) */}
+            <button
+              className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation (Issue 5) */}
+        {isMenuOpen && (
+          <div className="md:hidden border-b border-white/10 bg-black/95 backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
+            <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+              <Link href="#features" className="text-lg font-medium text-zinc-300 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Features</Link>
+              <Link href="#pricing" className="text-lg font-medium text-zinc-300 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Pricing</Link>
+              <Link href="/affiliates" className="text-lg font-medium text-emerald-400 hover:text-emerald-300 py-2" onClick={() => setIsMenuOpen(false)}>Affiliates</Link>
+              <hr className="border-white/5 my-2" />
+              <Button variant="outline" className="w-full border-white/10 text-white" asChild onClick={() => setIsMenuOpen(false)}>
+                <Link href="/login">Log in</Link>
+              </Button>
+              <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-0" asChild onClick={() => setIsMenuOpen(false)}>
+                <Link href="/login">Get Started</Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">
@@ -65,7 +100,7 @@ export default function Home() {
 
             <div className="mt-20 flex items-center justify-center gap-8 text-sm text-zinc-500 font-medium flex-wrap">
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> No credit card required</div>
-              <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> 10 Free Leads</div>
+              <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> {FREE_TRIAL_CREDITS} Free Leads</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> Cancel anytime</div>
             </div>
           </div>
@@ -143,112 +178,51 @@ export default function Home() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-              {/* Starter Plan */}
-              <Card className="bg-zinc-950/80 backdrop-blur border-white/10 relative flex flex-col p-4 md:p-6">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-white font-bold">Starter</CardTitle>
-                  <CardDescription className="text-zinc-400 text-base mt-2">Perfect for trying out the platform.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 mt-4">
-                  <div className="mb-8 flex items-end gap-2 flex-wrap">
-                    <span className="text-5xl font-extrabold text-white tracking-tight">$19</span>
-                    <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">$39</span>
-                    <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
-                  </div>
-                  <ul className="space-y-4">
-                    {['250 Leads/mo', 'CSV Export', 'Google Maps Scraping'].map((feature, i) => (
-                      <li key={i} className="flex items-start text-zinc-300 text-base">
-                        <CheckCircle2 className="h-5 w-5 text-indigo-500 mr-3 flex-shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="pt-6">
-                  <Button className="w-full h-12 text-base bg-white text-black hover:bg-zinc-200 transition-colors font-semibold">Get Started</Button>
-                </CardFooter>
-              </Card>
-
-              {/* Growth Plan */}
-              <Card className="bg-zinc-950/80 backdrop-blur border-white/10 relative flex flex-col p-4 md:p-6">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-white font-bold">Growth</CardTitle>
-                  <CardDescription className="text-zinc-400 text-base mt-2">For individuals scaling outreach.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 mt-4">
-                  <div className="mb-8 flex items-end gap-2 flex-wrap">
-                    <span className="text-5xl font-extrabold text-white tracking-tight">$49</span>
-                    <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">$99</span>
-                    <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
-                  </div>
-                  <ul className="space-y-4">
-                    {['1000 Leads/mo', 'CSV Export', 'Google Maps Scraping', 'Priority Support'].map((feature, i) => (
-                      <li key={i} className="flex items-start text-zinc-300 text-base">
-                        <CheckCircle2 className="h-5 w-5 text-indigo-500 mr-3 flex-shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="pt-6">
-                  <Button className="w-full h-12 text-base bg-white text-black hover:bg-zinc-200 transition-colors font-semibold">Get Growth</Button>
-                </CardFooter>
-              </Card>
-
-              {/* Scale Plan */}
-              <Card className="bg-black border-indigo-500 relative flex flex-col p-4 md:p-6 shadow-[0_0_30px_-5px_rgba(79,70,229,0.3)] transform lg:-translate-y-4">
-                <div className="absolute -top-4 left-0 right-0 flex justify-center">
-                  <Badge className="bg-indigo-500 text-white hover:bg-indigo-600 border-0 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider shadow-lg">Most Popular • Save 50%</Badge>
-                </div>
-                <CardHeader>
-                  <CardTitle className="text-2xl text-white font-bold">Scale</CardTitle>
-                  <CardDescription className="text-indigo-200/70 text-base mt-2">For growing agencies & teams.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 mt-4">
-                  <div className="mb-8 flex items-end gap-2 flex-wrap">
-                    <span className="text-5xl font-extrabold text-white tracking-tight">$99</span>
-                    <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">$199</span>
-                    <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
-                  </div>
-                  <ul className="space-y-4">
-                    {['2500 Leads/mo', 'CSV Export', 'Google Maps Scraping', 'Priority Support', 'Access to New Features'].map((feature, i) => (
-                      <li key={i} className="flex items-start text-zinc-300 text-base">
-                        <CheckCircle2 className="h-5 w-5 text-indigo-400 mr-3 flex-shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="pt-6">
-                  <Button className="w-full h-12 text-base bg-indigo-600 hover:bg-indigo-500 text-white border-0 shadow-[0_0_20px_rgba(79,70,229,0.5)] transition-all font-semibold hover:shadow-[0_0_30px_rgba(79,70,229,0.8)]">Get Scale</Button>
-                </CardFooter>
-              </Card>
-
-              {/* Enterprise Plan */}
-              <Card className="bg-zinc-950/80 backdrop-blur border-white/10 relative flex flex-col p-4 md:p-6">
-                <CardHeader>
-                  <CardTitle className="text-2xl text-white font-bold">Enterprise</CardTitle>
-                  <CardDescription className="text-zinc-400 text-base mt-2">Maximum volume and priority.</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 mt-4">
-                  <div className="mb-8 flex items-end gap-2 flex-wrap">
-                    <span className="text-5xl font-extrabold text-white tracking-tight">$199</span>
-                    <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">$399</span>
-                    <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
-                  </div>
-                  <ul className="space-y-4">
-                    {['5000 Leads/mo', 'CSV Export', 'Google Maps Scraping', '24/7 Priority Support', 'Dedicated Account Manager'].map((feature, i) => (
-                      <li key={i} className="flex items-start text-zinc-300 text-base">
-                        <CheckCircle2 className="h-5 w-5 text-indigo-500 mr-3 flex-shrink-0 mt-0.5" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="pt-6">
-                  <Button className="w-full h-12 text-base bg-white text-black hover:bg-zinc-200 transition-colors font-semibold">Get Enterprise</Button>
-                </CardFooter>
-              </Card>
+              {PLANS.map((plan) => (
+                <Card
+                  key={plan.id}
+                  className={`bg-zinc-950/80 backdrop-blur border-white/10 relative flex flex-col p-4 md:p-6 transition-all duration-300 hover:border-indigo-500/50 ${plan.popular ? 'border-indigo-500 shadow-[0_0_30px_-5px_rgba(79,70,229,0.3)] lg:-translate-y-4' : ''
+                    }`}
+                >
+                  {plan.popular && (
+                    <div className="absolute -top-4 left-0 right-0 flex justify-center text-white">
+                      <Badge className="bg-indigo-600 text-white border-0 px-3 py-1 text-xs font-black uppercase tracking-wider">Best Value</Badge>
+                    </div>
+                  )}
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-white font-bold">{plan.name}</CardTitle>
+                    <CardDescription className="text-zinc-400 text-base mt-2">{plan.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-1 mt-4">
+                    <div className="mb-8 flex items-end gap-2 flex-wrap">
+                      <span className="text-5xl font-extrabold text-white tracking-tight">${plan.price}</span>
+                      {plan.originalPrice && (
+                        <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">${plan.originalPrice}</span>
+                      )}
+                      <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
+                    </div>
+                    <ul className="space-y-4">
+                      {plan.features.map((feature, i) => (
+                        <li key={i} className="flex items-start text-zinc-300 text-base">
+                          <CheckCircle2 className={`h-5 w-5 mr-3 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-indigo-400' : 'text-indigo-500'}`} />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="pt-6">
+                    <Button
+                      className={`w-full h-12 text-base font-semibold transition-all ${plan.popular
+                        ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]'
+                        : 'bg-white text-black hover:bg-zinc-200'
+                        }`}
+                      asChild
+                    >
+                      <Link href="/login">Get {plan.name}</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           </div>
         </section>

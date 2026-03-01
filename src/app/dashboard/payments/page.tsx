@@ -1,15 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { CheckCircle2, Clock, Check, CreditCard } from "lucide-react";
+import { CheckCircle2, Clock, Check, CreditCard, HelpCircle } from "lucide-react";
+import { PLANS } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
 
-const PACKAGES = [
-    { name: "Starter", price: 19, credits: 250, description: "Perfect for testing the waters." },
-    { name: "Growth", price: 49, credits: 1000, description: "Great for small agencies and freelancers." },
-    { name: "Scale", price: 99, credits: 2500, description: "For businesses scaling their outreach." },
-    { name: "Enterprise", price: 199, credits: 5000, description: "Maximum power for high-volume sales teams." }
-];
+// Removed hardcoded PACKAGES, using PLANS from @/lib/plans
 
 export default async function PaymentsPage() {
     const supabase = await createClient();
@@ -45,11 +41,22 @@ export default async function PaymentsPage() {
 
             {/* Packages */}
             <div className="mb-12">
-                <h2 className="text-2xl font-semibold text-white mb-6">Available Packages</h2>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-semibold text-white">Available Packages</h2>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                        <HelpCircle className="w-3.5 h-3.5" />
+                        1 USDT ≈ 1 USD
+                    </div>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {PACKAGES.map((pkg) => (
-                        <div key={pkg.name} className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6 flex flex-col relative overflow-hidden group hover:border-indigo-500/50 transition-colors">
-                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    {PLANS.map((pkg) => (
+                        <div key={pkg.name} className={`bg-[#0a0a0a] border rounded-2xl p-6 flex flex-col relative overflow-hidden group transition-all duration-300 ${pkg.popular ? 'border-indigo-500/50 shadow-[0_0_20px_rgba(79,70,229,0.1)]' : 'border-white/5 hover:border-indigo-500/30'}`}>
+                            {pkg.popular && (
+                                <div className="absolute top-0 right-0 bg-indigo-600 text-[10px] font-bold text-white px-3 py-1 rounded-bl-lg uppercase tracking-wider">
+                                    Best Value
+                                </div>
+                            )}
+                            <div className="absolute -bottom-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <CreditCard className="w-24 h-24 text-indigo-500" />
                             </div>
 
@@ -57,27 +64,32 @@ export default async function PaymentsPage() {
                             <p className="text-sm text-gray-400 mb-6 min-h-[40px] relative z-10">{pkg.description}</p>
 
                             <div className="mb-6 relative z-10">
-                                <span className="text-3xl font-bold text-white">${pkg.price}</span>
-                                <span className="text-gray-400 text-sm ml-2">USDT</span>
+                                <div className="flex items-baseline gap-1">
+                                    <span className="text-3xl font-bold text-white">${pkg.price}</span>
+                                    <span className="text-gray-500 text-sm font-medium">USDT</span>
+                                </div>
+                                {pkg.originalPrice && (
+                                    <span className="text-sm text-gray-500 line-through">${pkg.originalPrice}</span>
+                                )}
                             </div>
 
                             <ul className="mb-8 space-y-3 flex-1 relative z-10">
                                 <li className="flex items-center gap-3 text-sm text-gray-300">
                                     <Check className="w-4 h-4 text-indigo-400" />
-                                    <span>{pkg.credits} Credits</span>
+                                    <span>{pkg.credits.toLocaleString()} Credits</span>
                                 </li>
-                                <li className="flex items-center gap-3 text-sm text-gray-300">
-                                    <Check className="w-4 h-4 text-indigo-400" />
-                                    <span>Access to All Features</span>
-                                </li>
-                                <li className="flex items-center gap-3 text-sm text-gray-300">
-                                    <Check className="w-4 h-4 text-indigo-400" />
-                                    <span>Prioritized Support</span>
-                                </li>
+                                {pkg.features.slice(1).map((feature, i) => (
+                                    <li key={i} className="flex items-center gap-3 text-sm text-gray-300">
+                                        <Check className="w-4 h-4 text-indigo-400" />
+                                        <span>{feature}</span>
+                                    </li>
+                                ))}
                             </ul>
 
                             <div className="relative z-10 mt-auto">
-                                <a href="/dashboard/billing" className="block w-full text-center px-4 py-2 mt-4 text-sm font-medium text-white bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all rounded-lg">Buy Credits</a>
+                                <a href="/dashboard/billing" className={`block w-full text-center px-4 py-2.5 mt-4 text-sm font-bold transition-all rounded-xl ${pkg.popular ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/20'}`}>
+                                    Get {pkg.name}
+                                </a>
                             </div>
                         </div>
                     ))}

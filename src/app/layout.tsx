@@ -4,7 +4,11 @@ import "./globals.css";
 import { Web3Provider } from "@/components/providers/Web3Provider";
 import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: 'B2B Leads - AI-Powered Google Maps Scraper',
@@ -32,26 +36,14 @@ export const metadata: Metadata = {
     images: ['https://b2bleads.ai/og-image.png'],
   },
   keywords: [
-    'b2b local lead generation', 'google maps scraper for agencies', 'extract plumbers emails',
-    'real estate lead finder dubai', 'dentist contact extraction tool', 'hvac lead generation software',
-    'b2b data enrichment api', 'automated lead generation software', 'linkedin email extractor',
-    'find local business owners', 'scrape roofing contractors google maps', 'restaurant owner emails usa',
-    'b2b sales prospecting tool', 'generate leads for marketing agencies', 'ecommerce decision makers contact',
-    'software companies email list', 'financial advisors lead generation', 'insurance agents scraper',
-    'gym owners contact list', 'cleaning services email extractor', 'construction company leads',
-    'lawyers and attorneys email database', 'accountants local search scraper', 'b2b cold email lists',
-    'auto repair shops lead finder', 'chiropractors email scraping tool', 'logistics companies leads list',
-    'manufacturing businesses contacts', 'wholesale distributors email scraper', 'plumbing contractors database',
-    'electricians local lead generation', 'landscaping businesses contact info', 'roofers email addresses',
-    'solar companies lead generation', 'property management companies list', 'real estate agents emails',
-    'medical spas contact extraction', 'plastic surgeons lead finder', 'veterinarians email list',
-    'pet groomers scraper', 'daycare centers lead generation', 'private schools email database',
-    'car dealerships contact details', 'trucking companies lead scraper', 'freight brokers email list',
-    'it services companies leads', 'web design agencies email finder', 'seo agencies contact extraction',
-    'digital marketing agencies leads', 'staffing agencies email scraper', 'recruitment companies leads',
-    'event planners contact list', 'caterers email addresses', 'florists local search scraper'
+    'B2B Leads Extraction', 'Google Maps Scraper', 'Lead Generation Software', 'LinkedIn Email Finder',
+    'Local SEO Leads', 'Sales Prospecting Tool', 'Bulk Email Extraction', 'Business Contact Finder',
+    'Scrape Google Places', 'Verified B2B Emails', 'Dubai Business Leads', 'USA Local Leads',
+    'Marketing Agency Tools', 'Cold Outbound Automation', 'High-Paying Clients Finder'
   ]
 };
+
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -59,12 +51,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={inter.className}>
-        <Web3Provider>
-          {children}
-          <Toaster position="top-center" richColors />
-        </Web3Provider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Web3Provider>
+            {children}
+            <Toaster position="top-center" richColors />
+          </Web3Provider>
+        </ThemeProvider>
       </body>
     </html>
   );

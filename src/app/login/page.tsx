@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import Image from 'next/image'
-import { Loader2 } from 'lucide-react'
+import { Loader2, ShieldCheck, Check, AlertCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -46,8 +46,36 @@ export default function LoginPage() {
         },
     })
 
-    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
+    const searchParams = React.useMemo(() => typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null, [])
     const message = searchParams?.get('message')
+
+    async function handleForgotPassword() {
+        const email = form.getValues('email')
+        if (!email || !z.string().email().safeParse(email).success) {
+            setErrorMsg('Please enter your email first to reset your password.')
+            return
+        }
+
+        setIsLoading(true)
+        setErrorMsg(null)
+        setSuccessMsg(null)
+
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/reset-password`,
+            })
+
+            if (error) {
+                setErrorMsg(error.message)
+            } else {
+                setSuccessMsg('Password reset link sent to your email.')
+            }
+        } catch (error: any) {
+            setErrorMsg(error.message || 'An error occurred')
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     async function handleLogin(values: z.infer<typeof formSchema>) {
         setIsLoading(true)
@@ -109,7 +137,7 @@ export default function LoginPage() {
                 Home
             </Link>
             <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-                <div className="absolute inset-0 bg-zinc-900" />
+                <div className="absolute inset-0 bg-background" />
                 <div className="relative z-20 flex items-center gap-2 text-lg font-medium">
                     <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
                     b2bleads
@@ -133,17 +161,17 @@ export default function LoginPage() {
                             Enter your email below to log into your account
                         </p>
                         {message && (
-                            <div className="p-3 rounded bg-red-500/10 border border-red-500/50 text-red-500 text-xs mt-2">
+                            <div className="p-3 rounded bg-destructive/10 border border-destructive/50 text-destructive text-xs mt-2">
                                 {message}
                             </div>
                         )}
                         {errorMsg && (
-                            <div className="p-3 rounded bg-red-500/10 border border-red-500/50 text-red-500 text-sm mt-2">
+                            <div className="p-3 rounded bg-destructive/10 border border-destructive/50 text-destructive text-sm mt-2">
                                 {errorMsg}
                             </div>
                         )}
                         {successMsg && (
-                            <div className="p-3 rounded bg-green-500/10 border border-green-500/50 text-green-500 text-sm mt-2">
+                            <div className="p-3 rounded bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 text-sm mt-2">
                                 {successMsg}
                             </div>
                         )}
@@ -176,7 +204,16 @@ export default function LoginPage() {
                                         name="password"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Password</FormLabel>
+                                                <div className="flex items-center justify-between">
+                                                    <FormLabel>Password</FormLabel>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleForgotPassword}
+                                                        className="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+                                                    >
+                                                        Forgot password?
+                                                    </button>
+                                                </div>
                                                 <FormControl>
                                                     <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
                                                 </FormControl>
@@ -210,17 +247,56 @@ export default function LoginPage() {
                                     <FormField
                                         control={form.control}
                                         name="password"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Password</FormLabel>
-                                                <FormControl>
-                                                    <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                        render={({ field }) => {
+                                            const password = field.value || ''
+                                            const hasLength = password.length >= 8
+                                            const hasUpper = /[A-Z]/.test(password)
+                                            const hasNumber = /[0-9]/.test(password)
+                                            const strength = [hasLength, hasUpper, hasNumber].filter(Boolean).length
+
+                                            return (
+                                                <FormItem>
+                                                    <FormLabel>Password</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="password" placeholder="••••••••" {...field} disabled={isLoading} />
+                                                    </FormControl>
+                                                    <div className="mt-2 space-y-2">
+                                                        <div className="flex gap-1 h-1">
+                                                            {[1, 2, 3].map((s) => (
+                                                                <div
+                                                                    key={s}
+                                                                    className={`flex-1 rounded-full transition-colors ${strength >= s
+                                                                        ? strength === 3 ? 'bg-emerald-500' : strength === 2 ? 'bg-yellow-500' : 'bg-red-500'
+                                                                        : 'bg-zinc-800'
+                                                                        }`}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px]">
+                                                            <div className={`flex items-center gap-1 ${hasLength ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                                                                {hasLength ? <Check className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border border-current" />}
+                                                                8+ characters
+                                                            </div>
+                                                            <div className={`flex items-center gap-1 ${hasUpper ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                                                                {hasUpper ? <Check className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border border-current" />}
+                                                                Uppercase
+                                                            </div>
+                                                            <div className={`flex items-center gap-1 ${hasNumber ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                                                                {hasNumber ? <Check className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border border-current" />}
+                                                                Number
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )
+                                        }}
                                     />
-                                    <Button className="w-full" type="submit" disabled={isLoading}>
+                                    <div className="flex items-center gap-2 p-3 rounded-lg bg-muted border border-border text-[11px] text-muted-foreground">
+                                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                        <span>Secure registration protected by hCaptcha Enterprise.</span>
+                                    </div>
+                                    <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" type="submit" disabled={isLoading}>
                                         {isLoading ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

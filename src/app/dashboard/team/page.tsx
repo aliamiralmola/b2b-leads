@@ -115,7 +115,7 @@ export default function TeamPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Invite Member Form */}
-                <Card className="bg-[#0a0a0a] border-white/5 shadow-2xl">
+                <Card className="bg-card border-border shadow-2xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-white">
                             <UserPlus className="h-5 w-5 text-indigo-400" />
@@ -168,7 +168,7 @@ export default function TeamPage() {
                 </Card>
 
                 {/* Team Members List */}
-                <Card className="lg:col-span-2 bg-[#0a0a0a] border-white/5 shadow-2xl">
+                <Card className="lg:col-span-2 bg-card border-border shadow-2xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-white">
                             <Users className="h-5 w-5 text-indigo-400" />
@@ -179,10 +179,10 @@ export default function TeamPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border border-white/5 overflow-hidden">
+                        <div className="rounded-md border border-border overflow-hidden">
                             <Table>
                                 <TableHeader className="bg-white/5">
-                                    <TableRow className="border-white/5 hover:bg-transparent">
+                                    <TableRow className="border-border hover:bg-transparent">
                                         <TableHead className="text-gray-300 font-semibold">Email</TableHead>
                                         <TableHead className="text-gray-300 font-semibold">Status</TableHead>
                                         <TableHead className="text-right text-gray-300 font-semibold">Actions</TableHead>
@@ -203,7 +203,7 @@ export default function TeamPage() {
                                         </TableRow>
                                     ) : (
                                         members.map((member) => (
-                                            <TableRow key={member.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                                            <TableRow key={member.id} className="border-border hover:bg-muted transition-colors">
                                                 <TableCell className="font-medium text-gray-200">
                                                     {member.email}
                                                 </TableCell>

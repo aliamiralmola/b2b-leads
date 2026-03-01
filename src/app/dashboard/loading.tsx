@@ -1,4 +1,8 @@
-export default function DashboardLoading() {
+"use client";
+
+import React from 'react';
+
+export default function Loading() {
     return (
         <div className="flex flex-col space-y-8 animate-pulse p-4">
             <div className="space-y-4">

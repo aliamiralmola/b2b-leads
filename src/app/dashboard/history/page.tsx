@@ -19,7 +19,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Eye, Download, Info } from "lucide-react";
+import { Eye, Download, Info, Trash2, Coins } from "lucide-react";
+import { deleteSearchHistory } from "../../actions/searchLeads";
 
 interface Lead {
     name: string;
@@ -76,11 +77,22 @@ export default function HistoryPage() {
         };
 
         fetchHistory();
-    }, []);
+    }, [supabase]);
 
     const handleViewResults = (leads: Lead[]) => {
         setSelectedLeads(leads);
         setIsModalOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this search history item?")) return;
+
+        try {
+            await deleteSearchHistory(id);
+            setHistory(prev => prev.filter(item => item.id !== id));
+        } catch (error: any) {
+            alert(error.message);
+        }
     };
 
     const exportToCSV = (leads: Lead[]) => {
@@ -151,8 +163,8 @@ export default function HistoryPage() {
                             <TableRow className="border-white/5 hover:bg-transparent bg-white/[0.02]">
                                 <TableHead className="text-gray-400 font-medium">Date</TableHead>
                                 <TableHead className="text-gray-400 font-medium">Keyword</TableHead>
-                                <TableHead className="text-gray-400 font-medium">Location</TableHead>
-                                <TableHead className="text-gray-400 font-medium text-center">Leads Found</TableHead>
+                                <TableHead className="text-gray-400 font-medium text-center">Location</TableHead>
+                                <TableHead className="text-gray-400 font-medium text-center">Credits Used</TableHead>
                                 <TableHead className="text-gray-400 font-medium text-right pr-6">Action</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -171,28 +183,42 @@ export default function HistoryPage() {
                                             })}
                                         </TableCell>
                                         <TableCell className="text-gray-300">{item.keyword}</TableCell>
-                                        <TableCell className="text-gray-300">{item.location}</TableCell>
+                                        <TableCell className="text-center text-gray-300">{item.location}</TableCell>
                                         <TableCell className="text-center">
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                                                {item.results_count} leads
-                                            </span>
+                                            <div className="flex flex-col items-center gap-1">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                    -{item.results_count} Credits
+                                                </span>
+                                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{item.results_count} Leads</span>
+                                            </div>
                                         </TableCell>
                                         <TableCell className="text-right pr-6">
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => handleViewResults(item.results_data || [])}
-                                                className="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all rounded-full px-4"
-                                            >
-                                                <Eye className="w-4 h-4 mr-2" />
-                                                View Results
-                                            </Button>
+                                            <div className="flex justify-end gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleViewResults(item.results_data || [])}
+                                                    className="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all rounded-full px-4"
+                                                >
+                                                    <Eye className="w-4 h-4 mr-2" />
+                                                    View
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(item.id)}
+                                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all rounded-full px-4"
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    Delete
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="h-32 text-center text-gray-500">
+                                    <TableCell colSpan={5} className="h-32 text-center text-gray-400">
                                         No searches found yet. Start exploring!
                                     </TableCell>
                                 </TableRow>
@@ -253,7 +279,7 @@ export default function HistoryPage() {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-48 text-center text-gray-500">
+                                        <TableCell colSpan={5} className="h-48 text-center text-gray-400">
                                             No data available for this search.
                                         </TableCell>
                                     </TableRow>

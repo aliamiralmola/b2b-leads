@@ -136,7 +136,7 @@ export default function AffiliatePage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {statCards.map((stat, i) => (
-                    <div key={i} className="bg-[#0a0a0a] border border-white/5 p-6 rounded-2xl hover:border-white/10 transition-all">
+                    <div key={i} className="bg-card border border-border p-6 rounded-2xl hover:border-primary/10 transition-all">
                         <div className={`p-3 rounded-xl bg-white/5 w-fit mb-4 ${stat.color}`}>
                             <stat.icon className="h-6 w-6" />
                         </div>
@@ -147,7 +147,7 @@ export default function AffiliatePage() {
             </div>
 
             {/* Referral History Table */}
-            <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden">
+            <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-white">Referral History</h3>
                     <span className="text-xs text-indigo-400 font-medium bg-indigo-400/10 px-2 py-1 rounded-md border border-indigo-400/20">

@@ -17,7 +17,7 @@ interface UpgradeModalProps {
 export function UpgradeModal({ open, onOpenChange }: UpgradeModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-md bg-[#0a0a0a] border-white/10 text-white">
+            <DialogContent className="sm:max-w-md bg-card border-border text-foreground">
                 <DialogHeader>
                     <div className="mx-auto bg-indigo-500/10 p-3 rounded-full mb-4 w-fit">
                         <Zap className="h-8 w-8 text-indigo-400" />

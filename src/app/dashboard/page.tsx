@@ -104,19 +104,7 @@ export default function DashboardPage() {
                         return date >= sevenDaysAgo;
                     });
 
-                    if (!hasData) {
-                        setChartData([
-                            { date: 'Feb 18', leads: 12 },
-                            { date: 'Feb 19', leads: 45 },
-                            { date: 'Feb 20', leads: 32 },
-                            { date: 'Feb 21', leads: 67 },
-                            { date: 'Feb 22', leads: 48 },
-                            { date: 'Feb 23', leads: 89 },
-                            { date: 'Feb 24', leads: 54 },
-                        ]);
-                    } else {
-                        setChartData(last7Days);
-                    }
+                    setChartData(last7Days);
 
                     // 4. Recent Activity (Last 3)
                     setRecentActivity(history.slice(0, 3));
@@ -175,7 +163,7 @@ export default function DashboardPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {statCards.map((stat, i) => (
-                    <div key={i} className="bg-[#0a0a0a] border border-white/5 p-6 rounded-2xl group hover:border-indigo-500/20 transition-all duration-300 relative overflow-hidden">
+                    <div key={i} className="bg-card border border-border p-6 rounded-2xl group hover:border-primary/20 transition-all duration-300 relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             <stat.icon className="h-24 w-24 -mr-8 -mt-8" />
                         </div>
@@ -199,7 +187,7 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Chart */}
-                <div className="lg:col-span-2 bg-[#0a0a0a] border border-white/5 rounded-2xl p-6">
+                <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h3 className="text-lg font-semibold text-white">Leads Performance</h3>
@@ -238,13 +226,13 @@ export default function DashboardPage() {
                                 />
                                 <Tooltip
                                     contentStyle={{
-                                        backgroundColor: '#0a0a0a',
-                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        backgroundColor: 'var(--card)',
+                                        border: '1px solid var(--border)',
                                         borderRadius: '12px',
                                         fontSize: '12px',
-                                        color: '#fff'
+                                        color: 'var(--foreground)'
                                     }}
-                                    itemStyle={{ color: '#6366f1' }}
+                                    itemStyle={{ color: 'var(--primary)' }}
                                 />
                                 <Area
                                     type="monotone"
@@ -260,7 +248,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Recent Activity */}
-                <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl p-6">
+                <div className="bg-card border border-border rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
                         <History className="h-5 w-5 text-gray-500" />

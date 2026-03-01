@@ -34,28 +34,22 @@ export default function AffiliatesPage() {
             {/* Navbar */}
             <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2 shrink-0">
                         <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
                         <span className="font-bold text-xl tracking-tight">b2bleads</span>
                     </Link>
 
+                    {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-                        <Link href="/#features" className="hover:text-white transition-colors">
-                            Features
-                        </Link>
-                        <Link href="/#pricing" className="hover:text-white transition-colors">
-                            Pricing
-                        </Link>
-                        <Link
-                            href="/affiliates"
-                            className="text-emerald-400 font-semibold flex items-center gap-1.5"
-                        >
+                        <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
+                        <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
+                        <Link href="/affiliates" className="text-emerald-400 font-semibold flex items-center gap-1.5">
                             <DollarSign className="w-3.5 h-3.5" />
                             Affiliates
                         </Link>
                     </nav>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <Button
                             variant="ghost"
                             className="hidden md:inline-flex text-zinc-300 hover:text-white hover:bg-white/10"
@@ -64,7 +58,7 @@ export default function AffiliatesPage() {
                             <Link href="/login">Log in</Link>
                         </Button>
                         <Button
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white border-0 shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all hover:shadow-[0_0_25px_rgba(16,185,129,0.6)]"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white border-0 shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] text-sm px-4"
                             asChild
                         >
                             <Link href="/signup">Join Partner Program</Link>
