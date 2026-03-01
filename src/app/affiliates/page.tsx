@@ -14,10 +14,16 @@ import {
     Sparkles,
     CheckCircle2,
     Zap,
+    Mail,
+    Linkedin,
+    Copy,
+    ShieldCheck,
+    CreditCard
 } from "lucide-react";
+import { EarningsCalculator } from "@/components/EarningsCalculator";
 
 export const metadata = {
-    title: "Affiliate Program – Earn 50% Recurring Commission | b2bleads",
+    title: "Best B2B Affiliate Program - Earn 50% Recurring Commission",
     description:
         "Join the b2bleads Affiliate Program and earn 50% recurring commission forever. Promote the world's easiest B2B Lead Scraper and build passive income.",
 };
@@ -131,6 +137,13 @@ export default function AffiliatesPage() {
                                 Instant dashboard access
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                {/* Calculated Earnings Section */}
+                <section className="py-24 bg-black relative">
+                    <div className="container mx-auto px-4 relative z-10">
+                        <EarningsCalculator />
                     </div>
                 </section>
 
@@ -267,6 +280,85 @@ export default function AffiliatesPage() {
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Marketing Assets Section */}
+                <section className="py-28 bg-zinc-950 border-t border-white/5 relative">
+                    <div className="container mx-auto px-4 relative z-10">
+                        <div className="text-center mb-16">
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">
+                                Marketing Assets
+                            </h2>
+                            <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+                                We've done the heavy lifting for you. Just copy, paste, and start earning. Get access to 3 pre-written email templates and 5 LinkedIn post templates.
+                            </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-emerald-500/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                                            <Mail className="h-5 w-5 text-blue-400" />
+                                        </div>
+                                        <CardTitle className="text-xl text-white">Email Templates (3)</CardTitle>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-zinc-400 mb-6">High-converting cold emails and newsletter mentions designed to get clicks.</p>
+                                    <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5 disabled:opacity-50">
+                                        <Copy className="w-4 h-4 mr-2" />
+                                        Available in Dashboard
+                                    </Button>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-emerald-500/50 transition-colors">
+                                <CardHeader>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center">
+                                            <Linkedin className="h-5 w-5 text-sky-400" />
+                                        </div>
+                                        <CardTitle className="text-xl text-white">LinkedIn Posts (5)</CardTitle>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-zinc-400 mb-6">Engaging social media posts with hooks and proven frameworks for B2B audiences.</p>
+                                    <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5 disabled:opacity-50">
+                                        <Copy className="w-4 h-4 mr-2" />
+                                        Available in Dashboard
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Payout Guarantee Section */}
+                <section className="py-24 bg-black relative border-t border-white/5">
+                    <div className="container mx-auto px-4 text-center">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
+                            <ShieldCheck className="h-8 w-8 text-emerald-400" />
+                        </div>
+                        <h2 className="text-3xl font-bold mb-4 text-white">Payout Guarantee</h2>
+                        <p className="text-zinc-400 max-w-xl mx-auto text-lg mb-8">
+                            We process all payouts reliably on the 1st of every month. No excuses, no delays.
+                        </p>
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
+                                <CreditCard className="w-4 h-4" />
+                                PayPal
+                            </Badge>
+                            <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
+                                <CreditCard className="w-4 h-4" />
+                                Payoneer
+                            </Badge>
+                            <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
+                                <Banknote className="w-4 h-4" />
+                                Wire Transfer
+                            </Badge>
                         </div>
                     </div>
                 </section>

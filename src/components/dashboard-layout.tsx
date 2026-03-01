@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Search, Database, Settings, LogOut, Bell, UserCircle, Users, Share2 } from "lucide-react";
+import { Home, Search, Database, Settings, LogOut, Bell, UserCircle, Users, Share2, CreditCard } from "lucide-react";
 import { signOut } from "@/app/login/actions";
 
 export function Sidebar() {
@@ -14,6 +14,7 @@ export function Sidebar() {
         { name: "Search History", href: "/dashboard/history", icon: Database },
         { name: "Team", href: "/dashboard/team", icon: Users },
         { name: "Affiliates", href: "/dashboard/affiliates", icon: Share2 },
+        { name: "Billing & Crypto", href: "/dashboard/billing", icon: CreditCard },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ];
 
