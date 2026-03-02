@@ -8,25 +8,25 @@ export function Navbar() {
             <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
                 <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
                     <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-muted-foreground">
                         b2bleads
                     </span>
                 </Link>
 
                 <nav className="hidden md:flex gap-8">
-                    <Link href="#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-white">
+                    <Link href="#features" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                         Features
                     </Link>
-                    <Link href="#pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-white">
+                    <Link href="#pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                         Pricing
                     </Link>
-                    <Link href="#testimonials" className="text-sm font-medium text-muted-foreground transition-colors hover:text-white">
+                    <Link href="#testimonials" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                         Testimonials
                     </Link>
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-muted-foreground transition-colors hover:text-white">
+                    <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                         Sign In
                     </Link>
                     <Button variant="gradient" asChild className="rounded-full px-6">

@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { verifyOrigin } from "@/utils/security";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { ethers } from "ethers";
@@ -31,7 +32,8 @@ const PLAN_PRICES: Record<string, number> = {
     "Enterprise": 199
 };
 
-export async function verifyAndUpgrade(txHash: string, planType: string) {
+export async function verifyAndUpgrade(txHash: string, planType: string, billingCycle: 'monthly' | 'annual' = 'monthly') {
+    await verifyOrigin();
     const supabase = await createClient();
 
     // 1. Verify Authentication
@@ -40,12 +42,35 @@ export async function verifyAndUpgrade(txHash: string, planType: string) {
         return { success: false, message: "Unauthorized. Please log in." };
     }
 
+    // 1.2 Rate Limiting (Prevent brute-force)
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count: attemptCount, error: countError } = await supabase
+        .from('payments')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gt('created_at', tenMinutesAgo);
+
+    if (!countError && attemptCount !== null && attemptCount >= 5) {
+        return { success: false, message: "Too many verification attempts. Please wait." };
+    }
+
     const creditsToAdd = PLAN_CREDITS[planType];
-    const planPrice = PLAN_PRICES[planType];
+    let planPrice = PLAN_PRICES[planType];
+
+    // Apply 20% discount for annual billing (price is per month, total paid is 12 * month * 0.8)
+    if (billingCycle === 'annual') {
+        planPrice = Math.floor(planPrice * 12 * 0.8);
+    }
     const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.toLowerCase();
 
     if (!creditsToAdd || !planPrice) {
         return { success: false, message: "Invalid plan type." };
+    }
+
+    // 1.5 Validate txHash format
+    const txHashRegex = /^0x[a-fA-F0-9]{64}$/;
+    if (!txHashRegex.test(txHash)) {
+        return { success: false, message: "Invalid transaction hash format." };
     }
 
     if (!adminWallet) {
@@ -101,6 +126,7 @@ export async function verifyAndUpgrade(txHash: string, planType: string) {
                 tx_hash: txHash,
                 amount: amountReceived,
                 plan_name: planType,
+                billing_cycle: billingCycle,
                 status: 'completed'
             });
 
@@ -113,13 +139,23 @@ export async function verifyAndUpgrade(txHash: string, planType: string) {
 
         // 5. Update Credits & User Tier
         // Fetch current profile
-        const { data: profile } = await supabase.from('profiles').select('credits').eq('id', user.id).single();
-        const newBalance = (profile?.credits || 0) + creditsToAdd;
-
+        // Atomic increment to prevent race conditions
         const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ credits: newBalance })
-            .eq('id', user.id);
+            .rpc('increment_credits', {
+                user_id: user.id,
+                credits_to_add: creditsToAdd
+            });
+
+        // Fallback if RPC doesn't exist
+        if (updateError) {
+            console.error("Atomic credits increment failed:", updateError);
+            const { data: profile } = await supabase.from('profiles').select('credits').eq('id', user.id).single();
+            const newBalance = (profile?.credits || 0) + creditsToAdd;
+            await supabase
+                .from('profiles')
+                .update({ credits: newBalance })
+                .eq('id', user.id);
+        }
 
         if (updateError) {
             return { success: false, message: "Failed to allocate credits." };
@@ -127,7 +163,7 @@ export async function verifyAndUpgrade(txHash: string, planType: string) {
 
         // 6. Handle Affiliate
         const cookieStore = await cookies();
-        const referralCookie = cookieStore.get('referral');
+        const referralCookie = cookieStore.get('affiliate_code');
         if (referralCookie?.value) {
             const { data: affiliate } = await supabase.from('affiliates').select('*').eq('referral_code', referralCookie.value).single();
             if (affiliate) {

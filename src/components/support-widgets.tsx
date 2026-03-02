@@ -45,8 +45,8 @@ export function SupportWidgets() {
             {isFeedbackOpen && (
                 <div className="bg-card border border-border p-4 rounded-2xl shadow-2xl animate-in slide-in-from-bottom-4 duration-300 w-64 mb-2">
                     <div className="flex justify-between items-center mb-4">
-                        <span className="text-sm font-bold text-white">How is your experience?</span>
-                        <button onClick={() => setIsFeedbackOpen(false)} className="text-gray-500 hover:text-white">
+                        <span className="text-sm font-bold text-foreground">How is your experience?</span>
+                        <button onClick={() => setIsFeedbackOpen(false)} className="text-muted-foreground hover:text-foreground">
                             <X className="h-4 w-4" />
                         </button>
                     </div>
@@ -56,14 +56,14 @@ export function SupportWidgets() {
                             className="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all group"
                         >
                             <ThumbsUp className="h-6 w-6 text-emerald-400 group-hover:scale-110 transition-transform" />
-                            <span className="text-[10px] font-bold text-emerald-300">LOVING IT</span>
+                            <span className="text-[10px] font-bold text-emerald-400/80">LOVING IT</span>
                         </button>
                         <button
                             onClick={() => handleFeedback('negative')}
                             className="flex flex-col items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-all group"
                         >
                             <ThumbsDown className="h-6 w-6 text-rose-400 group-hover:scale-110 transition-transform" />
-                            <span className="text-[10px] font-bold text-rose-300">COULD IMPROVE</span>
+                            <span className="text-[10px] font-bold text-rose-400/80">COULD IMPROVE</span>
                         </button>
                     </div>
                 </div>
@@ -90,8 +90,8 @@ export function SupportWidgets() {
                     </div>
 
                     <div className="h-64 p-6 overflow-y-auto bg-background flex flex-col gap-4">
-                        <div className="bg-zinc-900 border border-white/5 p-4 rounded-2xl rounded-tl-none max-w-[85%] self-start">
-                            <p className="text-sm text-gray-300">
+                        <div className="bg-muted border border-border p-4 rounded-2xl rounded-tl-none max-w-[85%] self-start">
+                            <p className="text-sm text-muted-foreground">
                                 Hi there! 👋 Need help with your search or billing? Send us a message and we'll get back to you within 30 minutes.
                             </p>
                         </div>
@@ -103,7 +103,7 @@ export function SupportWidgets() {
                             value={chatMessage}
                             onChange={(e) => setChatMessage(e.target.value)}
                             placeholder="Type your message..."
-                            className="flex-1 bg-white/5 border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
+                            className="flex-1 bg-background border-border rounded-xl px-4 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
                         />
                         <button
                             type="submit"
@@ -120,7 +120,7 @@ export function SupportWidgets() {
                 <Button
                     variant="outline"
                     onClick={() => setIsFeedbackOpen(!isFeedbackOpen)}
-                    className="h-12 px-6 rounded-full bg-zinc-900/80 backdrop-blur-md border border-white/10 text-gray-300 hover:text-white hover:border-indigo-500/50 flex items-center gap-2 group shadow-xl"
+                    className="h-12 px-6 rounded-full bg-card/80 backdrop-blur-md border border-border text-muted-foreground hover:text-foreground hover:border-indigo-500/50 flex items-center gap-2 group shadow-xl"
                 >
                     <Smile className="h-5 w-5 text-indigo-400 group-hover:scale-110 transition-transform" />
                     <span className="hidden md:inline font-bold text-xs uppercase tracking-widest">Feedback</span>
@@ -132,7 +132,7 @@ export function SupportWidgets() {
                 >
                     <MessageSquare className="h-5 w-5 group-hover:scale-110 transition-transform" />
                     <span className="hidden md:inline font-bold text-xs uppercase tracking-widest">Live Support</span>
-                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-emerald-500 border-2 border-zinc-950 rounded-full" />
+                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-emerald-500 border-2 border-background rounded-full" />
                 </Button>
             </div>
         </div>

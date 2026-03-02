@@ -66,14 +66,14 @@ export function BillingHistory({ invoices }: { invoices: Invoice[] }) {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 gap-4 border-b border-white/5 bg-white/[0.01]">
-                <h3 className="font-bold text-white text-lg flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 gap-4 border-b border-border bg-muted/20">
+                <h3 className="font-bold text-foreground text-lg flex items-center gap-2">
                     Billing History
-                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">({sorted.length})</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">({sorted.length})</span>
                 </h3>
                 <div className="flex items-center gap-3">
                     <select
-                        className="bg-white/5 border border-white/10 text-[10px] text-white rounded-xl px-3 py-2 outline-none appearance-none cursor-pointer font-bold uppercase tracking-widest"
+                        className="bg-muted border border-border text-[10px] text-foreground rounded-xl px-3 py-2 outline-none appearance-none cursor-pointer font-bold uppercase tracking-widest"
                         value={statusFilter}
                         onChange={e => setStatusFilter(e.target.value)}
                     >
@@ -94,8 +94,8 @@ export function BillingHistory({ invoices }: { invoices: Invoice[] }) {
 
             <div className="overflow-x-auto">
                 <Table>
-                    <TableHeader className="bg-white/[0.01]">
-                        <TableRow className="border-white/5">
+                    <TableHeader className="bg-muted/30">
+                        <TableRow className="border-border">
                             {([
                                 ["id", "Invoice ID"],
                                 ["date", "Date"],
@@ -104,7 +104,7 @@ export function BillingHistory({ invoices }: { invoices: Invoice[] }) {
                             ] as [SortKey, string][]).map(([key, label]) => (
                                 <TableHead
                                     key={key}
-                                    className="text-gray-400 font-bold uppercase tracking-widest text-[10px] py-4 cursor-pointer hover:text-white transition-colors select-none"
+                                    className="text-muted-foreground font-bold uppercase tracking-widest text-[10px] py-4 cursor-pointer hover:text-foreground transition-colors select-none"
                                     onClick={() => handleSort(key)}
                                 >
                                     <span className="flex items-center">
@@ -117,16 +117,16 @@ export function BillingHistory({ invoices }: { invoices: Invoice[] }) {
                     </TableHeader>
                     <TableBody>
                         {sorted.length > 0 ? sorted.map((invoice) => (
-                            <TableRow key={invoice.id} className="border-white/5 hover:bg-white/5 transition-colors">
-                                <TableCell className="text-white font-bold">{invoice.id}</TableCell>
-                                <TableCell className="text-gray-400 font-medium">{invoice.date}</TableCell>
-                                <TableCell className="text-gray-400 font-medium">{invoice.amount}</TableCell>
+                            <TableRow key={invoice.id} className="border-border hover:bg-muted/50 transition-colors">
+                                <TableCell className="text-foreground font-bold">{invoice.id}</TableCell>
+                                <TableCell className="text-muted-foreground font-medium">{invoice.date}</TableCell>
+                                <TableCell className="text-muted-foreground font-medium">{invoice.amount}</TableCell>
                                 <TableCell>
                                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${invoice.status === "Paid"
-                                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                            : invoice.status === "Failed"
-                                                ? "bg-red-500/10 text-red-400 border-red-500/20"
-                                                : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                        ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                        : invoice.status === "Failed"
+                                            ? "bg-red-500/10 text-red-400 border-red-500/20"
+                                            : "bg-amber-500/10 text-amber-400 border-amber-500/20"
                                         }`}>
                                         {invoice.status}
                                     </span>
@@ -134,7 +134,7 @@ export function BillingHistory({ invoices }: { invoices: Invoice[] }) {
                             </TableRow>
                         )) : (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-32 text-center text-gray-600">
+                                <TableCell colSpan={4} className="h-32 text-center text-muted-foreground">
                                     No transactions found yet.
                                 </TableCell>
                             </TableRow>

@@ -100,8 +100,8 @@ export default function AffiliatePage() {
         <div className="space-y-8 animate-in fade-in duration-700">
             {/* Header */}
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Affiliate Program</h2>
-                <p className="text-gray-400 max-w-2xl">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Affiliate Program</h2>
+                <p className="text-muted-foreground max-w-2xl">
                     Invite others to b2bleads and earn commission on every signup.
                 </p>
             </div>
@@ -113,13 +113,13 @@ export default function AffiliatePage() {
                 </div>
 
                 <div className="relative z-10 max-w-xl">
-                    <h3 className="text-xl font-bold text-white mb-4">Your Referral Link</h3>
-                    <p className="text-gray-400 mb-6 leading-relaxed">
+                    <h3 className="text-xl font-bold text-foreground mb-4">Your Referral Link</h3>
+                    <p className="text-muted-foreground mb-6 leading-relaxed">
                         Share this link with your network. When someone signs up through your link, they'll be tracked as your referral.
                     </p>
 
                     <div className="flex gap-2">
-                        <div className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-gray-300 font-mono text-sm flex items-center overflow-x-auto whitespace-nowrap scrollbar-hide">
+                        <div className="flex-1 bg-black/20 dark:bg-black/40 border border-border rounded-xl px-4 py-3 text-foreground/80 font-mono text-sm flex items-center overflow-x-auto whitespace-nowrap scrollbar-hide">
                             {referralLink}
                         </div>
                         <button
@@ -137,19 +137,19 @@ export default function AffiliatePage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {statCards.map((stat, i) => (
                     <div key={i} className="bg-card border border-border p-6 rounded-2xl hover:border-primary/10 transition-all">
-                        <div className={`p-3 rounded-xl bg-white/5 w-fit mb-4 ${stat.color}`}>
+                        <div className={`p-3 rounded-xl bg-muted w-fit mb-4 ${stat.color}`}>
                             <stat.icon className="h-6 w-6" />
                         </div>
-                        <p className="text-sm font-medium text-gray-400 mb-1">{stat.label}</p>
-                        <h3 className="text-3xl font-bold text-white tracking-tight">{stat.value}</h3>
+                        <p className="text-sm font-medium text-muted-foreground mb-1">{stat.label}</p>
+                        <h3 className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</h3>
                     </div>
                 ))}
             </div>
 
             {/* Referral History Table */}
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-white">Referral History</h3>
+                <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-foreground">Referral History</h3>
                     <span className="text-xs text-indigo-400 font-medium bg-indigo-400/10 px-2 py-1 rounded-md border border-indigo-400/20">
                         Live Tracking
                     </span>
@@ -157,24 +157,24 @@ export default function AffiliatePage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="bg-white/5">
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">User Email</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Commission</th>
-                                <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Action</th>
+                            <tr className="bg-muted/50">
+                                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">User Email</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Commission</th>
+                                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-border">
                             {referralHistory.map((row, i) => (
-                                <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
-                                    <td className="px-6 py-4 text-sm text-gray-300">
+                                <tr key={i} className="hover:bg-muted transition-colors group">
+                                    <td className="px-6 py-4 text-sm text-foreground/80">
                                         <div className="flex items-center gap-2">
-                                            <Calendar className="h-4 w-4 text-gray-500" />
+                                            <Calendar className="h-4 w-4 text-muted-foreground" />
                                             {row.date}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-gray-300 font-medium">
+                                    <td className="px-6 py-4 text-sm text-foreground/80 font-medium">
                                         {row.email}
                                     </td>
                                     <td className="px-6 py-4 text-sm">
@@ -185,11 +185,11 @@ export default function AffiliatePage() {
                                             {row.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-sm text-white font-bold">
+                                    <td className="px-6 py-4 text-sm text-foreground font-bold">
                                         {row.commission}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        <button className="text-gray-500 group-hover:text-white transition-colors">
+                                        <button className="text-muted-foreground group-hover:text-foreground transition-colors">
                                             <ArrowUpRight className="h-4 w-4" />
                                         </button>
                                     </td>

@@ -19,8 +19,10 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Eye, Download, Info, Trash2, Coins } from "lucide-react";
+import { Eye, Download, Info, Trash2, Coins, ChevronLeft, ChevronRight } from "lucide-react";
 import { deleteSearchHistory } from "../../actions/searchLeads";
+import { ConfirmModal } from "@/components/ConfirmModal";
+import { toast } from "sonner";
 
 interface Lead {
     name: string;
@@ -46,6 +48,11 @@ export default function HistoryPage() {
     const [selectedLeads, setSelectedLeads] = useState<Lead[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isVerified, setIsVerified] = useState<boolean | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
     const supabase = createClient();
 
     useEffect(() => {
@@ -84,14 +91,20 @@ export default function HistoryPage() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this search history item?")) return;
+    const handleDelete = async () => {
+        if (!itemToDelete) return;
 
+        setIsDeleting(true);
         try {
-            await deleteSearchHistory(id);
-            setHistory(prev => prev.filter(item => item.id !== id));
+            await deleteSearchHistory(itemToDelete);
+            setHistory(prev => prev.filter(item => item.id !== itemToDelete));
+            toast.success("Search history item deleted successfully");
         } catch (error: any) {
-            alert(error.message);
+            toast.error(error.message || "Failed to delete history item");
+        } finally {
+            setIsDeleting(false);
+            setIsDeleteModalOpen(false);
+            setItemToDelete(null);
         }
     };
 
@@ -133,8 +146,8 @@ export default function HistoryPage() {
                 <div className="bg-orange-500/10 p-4 rounded-full mb-4">
                     <Info className="h-10 w-10 text-orange-500" />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Verification Required</h2>
-                <p className="text-gray-400 max-w-md">
+                <h2 className="text-2xl font-bold text-foreground">Verification Required</h2>
+                <p className="text-muted-foreground max-w-md">
                     Please verify your email address to view your search history.
                 </p>
             </div>
@@ -145,80 +158,145 @@ export default function HistoryPage() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Search History</h2>
-                    <p className="text-gray-400">
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground">Search History</h2>
+                    <p className="text-muted-foreground">
                         A record of all your past lead searches.
                     </p>
                 </div>
             </div>
 
-            <Card className="bg-[#0a0a0a] border-white/5 shadow-xl overflow-hidden">
+            <Card className="bg-card border-border shadow-xl overflow-hidden">
                 <CardHeader>
-                    <CardTitle className="text-white">Recent Searches</CardTitle>
-                    <CardDescription className="text-gray-400">View your search queries and results count.</CardDescription>
+                    <CardTitle className="text-foreground">Recent Searches</CardTitle>
+                    <CardDescription className="text-muted-foreground">View your search queries and results count.</CardDescription>
                 </CardHeader>
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
-                            <TableRow className="border-white/5 hover:bg-transparent bg-white/[0.02]">
-                                <TableHead className="text-gray-400 font-medium">Date</TableHead>
-                                <TableHead className="text-gray-400 font-medium">Keyword</TableHead>
-                                <TableHead className="text-gray-400 font-medium text-center">Location</TableHead>
-                                <TableHead className="text-gray-400 font-medium text-center">Credits Used</TableHead>
-                                <TableHead className="text-gray-400 font-medium text-right pr-6">Action</TableHead>
+                            <TableRow className="border-border hover:bg-transparent bg-muted/50">
+                                <TableHead className="text-muted-foreground font-medium">Date</TableHead>
+                                <TableHead className="text-muted-foreground font-medium">Keyword</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-center">Location</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-center">Credits Used</TableHead>
+                                <TableHead className="text-muted-foreground font-medium text-right pr-6">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {history.length > 0 ? (
-                                history.map((item) => (
-                                    <TableRow key={item.id} className="border-white/5 hover:bg-white/5 transition-colors group">
-                                        <TableCell className="font-medium text-gray-300 py-4">
-                                            {new Date(item.created_at).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric',
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                                hour12: false
-                                            })}
-                                        </TableCell>
-                                        <TableCell className="text-gray-300">{item.keyword}</TableCell>
-                                        <TableCell className="text-center text-gray-300">{item.location}</TableCell>
-                                        <TableCell className="text-center">
-                                            <div className="flex flex-col items-center gap-1">
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                                    -{item.results_count} Credits
-                                                </span>
-                                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{item.results_count} Leads</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right pr-6">
-                                            <div className="flex justify-end gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleViewResults(item.results_data || [])}
-                                                    className="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all rounded-full px-4"
-                                                >
-                                                    <Eye className="w-4 h-4 mr-2" />
-                                                    View
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDelete(item.id)}
-                                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all rounded-full px-4"
-                                                >
-                                                    <Trash2 className="w-4 h-4 mr-2" />
-                                                    Delete
-                                                </Button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
+                                (() => {
+                                    const totalPages = Math.ceil(history.length / itemsPerPage);
+                                    const paginatedHistory = history.slice(
+                                        (currentPage - 1) * itemsPerPage,
+                                        currentPage * itemsPerPage
+                                    );
+
+                                    return (
+                                        <>
+                                            {paginatedHistory.map((item) => (
+                                                <TableRow key={item.id} className="border-border hover:bg-muted transition-colors group">
+                                                    <TableCell className="font-medium text-foreground/80 py-4">
+                                                        {new Date(item.created_at).toLocaleDateString('en-US', {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            hour12: false
+                                                        })}
+                                                    </TableCell>
+                                                    <TableCell className="text-foreground/80 font-bold">{item.keyword}</TableCell>
+                                                    <TableCell className="text-center text-foreground/80">{item.location}</TableCell>
+                                                    <TableCell className="text-center">
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                                -{item.results_count} Credits
+                                                            </span>
+                                                            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{item.results_count} Leads</span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="text-right pr-6">
+                                                        <div className="flex justify-end gap-2">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => handleViewResults(item.results_data || [])}
+                                                                className="text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 transition-all rounded-full px-4"
+                                                            >
+                                                                <Eye className="w-4 h-4 mr-2" />
+                                                                View
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => {
+                                                                    setItemToDelete(item.id);
+                                                                    setIsDeleteModalOpen(true);
+                                                                }}
+                                                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all rounded-full px-4"
+                                                            >
+                                                                <Trash2 className="w-4 h-4 mr-2" />
+                                                                Delete
+                                                            </Button>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+
+                                            {history.length > itemsPerPage && (
+                                                <TableRow className="hover:bg-transparent border-t border-border">
+                                                    <TableCell colSpan={5} className="py-4 px-6">
+                                                        <div className="flex items-center justify-between">
+                                                            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">
+                                                                Showing {(currentPage - 1) * itemsPerPage + 1}-{Math.min(history.length, currentPage * itemsPerPage)} of {history.length} searches
+                                                            </p>
+                                                            <div className="flex items-center gap-2">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    disabled={currentPage === 1}
+                                                                    onClick={() => setCurrentPage(p => p - 1)}
+                                                                    className="h-8 border-border bg-card hover:bg-muted text-xs font-bold px-3 transition-all"
+                                                                >
+                                                                    <ChevronLeft className="h-4 w-4 mr-1" /> Previous
+                                                                </Button>
+                                                                <div className="flex items-center gap-1">
+                                                                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                                                        let pageNum = currentPage <= 3 ? i + 1 : currentPage + i - 2;
+                                                                        if (pageNum > totalPages) pageNum = totalPages - (4 - i);
+                                                                        if (pageNum < 1) pageNum = i + 1;
+                                                                        if (pageNum > totalPages) return null;
+
+                                                                        return (
+                                                                            <button
+                                                                                key={pageNum}
+                                                                                onClick={() => setCurrentPage(pageNum)}
+                                                                                className={`h-8 w-8 rounded-lg font-bold text-xs transition-all ${currentPage === pageNum ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'border border-border bg-card text-muted-foreground hover:bg-muted font-outfit'}`}
+                                                                            >
+                                                                                {pageNum}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    disabled={currentPage === totalPages}
+                                                                    onClick={() => setCurrentPage(p => p + 1)}
+                                                                    className="h-8 border-border bg-card hover:bg-muted text-xs font-bold px-3 transition-all"
+                                                                >
+                                                                    Next <ChevronRight className="h-4 w-4 ml-1" />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </>
+                                    );
+                                })()
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="h-32 text-center text-gray-400">
+                                    <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
                                         No searches found yet. Start exploring!
                                     </TableCell>
                                 </TableRow>
@@ -229,14 +307,14 @@ export default function HistoryPage() {
             </Card>
 
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col bg-[#0a0a0a] border-white/5 text-white shadow-2xl">
-                    <DialogHeader className="flex flex-row items-center justify-between pb-4 border-b border-white/5">
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col bg-card border-border text-foreground shadow-2xl">
+                    <DialogHeader className="flex flex-row items-center justify-between pb-4 border-b border-border">
                         <div className="space-y-1">
                             <DialogTitle className="text-2xl font-bold flex items-center gap-2">
                                 <Info className="w-5 h-5 text-indigo-400" />
                                 Extracted Leads
                             </DialogTitle>
-                            <p className="text-sm text-gray-400">Showing {selectedLeads.length} leads from this search.</p>
+                            <p className="text-sm text-muted-foreground">Showing {selectedLeads.length} leads from this search.</p>
                         </div>
                         <Button
                             onClick={() => exportToCSV(selectedLeads)}
@@ -247,24 +325,24 @@ export default function HistoryPage() {
                         </Button>
                     </DialogHeader>
 
-                    <div className="flex-1 overflow-auto mt-4 rounded-xl border border-white/5 bg-black/40">
+                    <div className="flex-1 overflow-auto mt-4 rounded-xl border border-border bg-card/40">
                         <Table>
-                            <TableHeader className="bg-white/[0.02]">
-                                <TableRow className="border-white/5 hover:bg-transparent">
-                                    <TableHead className="text-gray-400 font-medium">Business Name</TableHead>
-                                    <TableHead className="text-gray-400 font-medium">Phone</TableHead>
-                                    <TableHead className="text-gray-400 font-medium">Location</TableHead>
-                                    <TableHead className="text-gray-400 font-medium">Website</TableHead>
-                                    <TableHead className="text-gray-400 font-medium">AI Insight</TableHead>
+                            <TableHeader className="bg-muted/50">
+                                <TableRow className="border-border hover:bg-transparent">
+                                    <TableHead className="text-muted-foreground font-medium">Business Name</TableHead>
+                                    <TableHead className="text-muted-foreground font-medium">Phone</TableHead>
+                                    <TableHead className="text-muted-foreground font-medium">Location</TableHead>
+                                    <TableHead className="text-muted-foreground font-medium">Website</TableHead>
+                                    <TableHead className="text-muted-foreground font-medium">AI Insight</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {selectedLeads.length > 0 ? (
                                     selectedLeads.map((lead, idx) => (
-                                        <TableRow key={idx} className="border-white/5 hover:bg-white/5 transition-colors">
-                                            <TableCell className="font-semibold text-white py-4">{lead.name}</TableCell>
-                                            <TableCell className="text-gray-300">{lead.phone || "N/A"}</TableCell>
-                                            <TableCell className="text-gray-300 text-sm max-w-[200px] truncate">{lead.address || "N/A"}</TableCell>
+                                        <TableRow key={idx} className="border-border hover:bg-muted transition-colors">
+                                            <TableCell className="font-semibold text-foreground py-4">{lead.name}</TableCell>
+                                            <TableCell className="text-foreground/80">{lead.phone || "N/A"}</TableCell>
+                                            <TableCell className="text-foreground/80 text-sm max-w-[200px] truncate">{lead.address || "N/A"}</TableCell>
                                             <TableCell className="text-indigo-400">
                                                 {lead.website ? (
                                                     <a href={lead.website} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1">
@@ -272,14 +350,14 @@ export default function HistoryPage() {
                                                     </a>
                                                 ) : "N/A"}
                                             </TableCell>
-                                            <TableCell className="text-gray-400 text-xs italic max-w-[250px] leading-relaxed">
+                                            <TableCell className="text-muted-foreground text-xs italic max-w-[250px] leading-relaxed">
                                                 {lead.ai_insight || "No insight available"}
                                             </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-48 text-center text-gray-400">
+                                        <TableCell colSpan={5} className="h-48 text-center text-muted-foreground">
                                             No data available for this search.
                                         </TableCell>
                                     </TableRow>
@@ -289,6 +367,19 @@ export default function HistoryPage() {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <ConfirmModal
+                open={isDeleteModalOpen}
+                onOpenChange={(open) => {
+                    setIsDeleteModalOpen(open);
+                    if (!open) setItemToDelete(null);
+                }}
+                onConfirm={handleDelete}
+                title="Delete Search History"
+                description="Are you sure you want to delete this search history item? This action cannot be undone and the extracted leads for this search will be removed from your history."
+                confirmText={isDeleting ? "Deleting..." : "Delete History"}
+                variant="destructive"
+            />
         </div>
     );
 }

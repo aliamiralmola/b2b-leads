@@ -47,14 +47,17 @@ export default function BillingPage() {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 setUser(user);
-                // Fetch profile credits
+                // Fetch profile credits and auto-renewal
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('credits')
+                    .select('credits, auto_renewal')
                     .eq('id', user.id)
                     .single();
 
-                if (profile) setCredits(profile.credits);
+                if (profile) {
+                    setCredits(profile.credits);
+                    setAutoRenewal(!!profile.auto_renewal);
+                }
 
                 // Fetch payment history
                 const { data: history } = await supabase
@@ -78,7 +81,7 @@ export default function BillingPage() {
     const handlePaymentComplete = async (txHash: string) => {
         setIsVerifying(true);
         try {
-            const result = await verifyAndUpgrade(txHash);
+            const result = await verifyAndUpgrade(txHash, selectedPlan?.name || "", billingCycle);
             if (result.success) {
                 toast.success("Payment verified! Your account has been upgraded.");
                 // Refresh data
@@ -88,7 +91,7 @@ export default function BillingPage() {
                 const { data: history } = await supabase.from('payments').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
                 if (history) setPayments(history);
             } else {
-                toast.error("Verification failed. Please contact support.");
+                toast.error(result.message || "Verification failed. Please contact support.");
             }
         } catch (error) {
             console.error(error);
@@ -96,6 +99,22 @@ export default function BillingPage() {
         } finally {
             setIsVerifying(false);
             setSelectedPlan(null);
+        }
+    };
+
+    const handleToggleAutoRenewal = async (checked: boolean) => {
+        setAutoRenewal(checked);
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({ auto_renewal: checked })
+                .eq('id', user.id);
+
+            if (error) throw error;
+            toast.success(`Auto-renewal ${checked ? "enabled" : "disabled"}`);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to update auto-renewal setting.");
         }
     };
 
@@ -219,8 +238,8 @@ export default function BillingPage() {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-white mb-2">Billing & Subscription</h1>
-                    <p className="text-gray-400 text-lg">
+                    <h1 className="text-4xl font-black tracking-tight text-foreground mb-2">Billing & Subscription</h1>
+                    <p className="text-muted-foreground text-lg">
                         Manage your credits, upgrade your plan, and view transaction history.
                     </p>
                 </div>
@@ -250,39 +269,39 @@ export default function BillingPage() {
             <section className="space-y-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                            <CreditCard className="w-4 h-4 text-gray-400" />
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                            <CreditCard className="w-4 h-4 text-muted-foreground" />
                         </div>
-                        <h2 className="text-2xl font-bold text-white">Choose a Plan</h2>
+                        <h2 className="text-2xl font-bold text-foreground">Choose a Plan</h2>
                     </div>
 
-                    <div className="flex items-center gap-8 bg-white/5 p-1.5 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-8 bg-muted p-1.5 rounded-2xl border border-border">
                         <div className="flex items-center gap-2 px-3">
                             <button
                                 onClick={() => setBillingCycle('monthly')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${billingCycle === 'monthly' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${billingCycle === 'monthly' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
                             >
                                 Monthly
                             </button>
                             <button
                                 onClick={() => setBillingCycle('annual')}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all relative ${billingCycle === 'annual' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all relative ${billingCycle === 'annual' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
                             >
                                 Annual
                                 <span className="absolute -top-2 -right-2 bg-emerald-500 text-[8px] text-white px-1.5 py-0.5 rounded-full font-black uppercase">Save 20%</span>
                             </button>
                         </div>
 
-                        <div className="h-4 w-px bg-white/10 hidden md:block" />
+                        <div className="h-4 w-px bg-border hidden md:block" />
 
                         <div className="flex items-center space-x-3 px-3">
                             <Switch
                                 id="auto-renewal"
                                 checked={autoRenewal}
-                                onCheckedChange={setAutoRenewal}
+                                onCheckedChange={handleToggleAutoRenewal}
                                 className="data-[state=checked]:bg-primary"
                             />
-                            <Label htmlFor="auto-renewal" className="text-sm font-bold text-gray-400 cursor-pointer flex items-center gap-2">
+                            <Label htmlFor="auto-renewal" className="text-sm font-bold text-muted-foreground cursor-pointer flex items-center gap-2">
                                 <RefreshCw className={`w-3 h-3 ${autoRenewal ? 'text-primary animate-spin-slow' : ''}`} />
                                 Auto-Renewal
                             </Label>
@@ -295,32 +314,32 @@ export default function BillingPage() {
             {/* History Section */}
             <section className="space-y-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                        <History className="w-4 h-4 text-gray-400" />
+                    <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                        <History className="w-4 h-4 text-muted-foreground" />
                     </div>
-                    <h2 className="text-2xl font-bold text-white">Subscription History</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Subscription History</h2>
                 </div>
 
                 <Card className="bg-card border-border shadow-2xl overflow-hidden">
                     <Table>
                         <TableHeader className="bg-white/[0.02]">
                             <TableRow className="border-border">
-                                <TableHead className="text-gray-400">Date</TableHead>
-                                <TableHead className="text-gray-400">Plan</TableHead>
-                                <TableHead className="text-gray-400">Amount</TableHead>
-                                <TableHead className="text-gray-400">Transaction</TableHead>
-                                <TableHead className="text-gray-400 text-right pr-8">Actions</TableHead>
+                                <TableHead className="text-muted-foreground">Date</TableHead>
+                                <TableHead className="text-muted-foreground">Plan</TableHead>
+                                <TableHead className="text-muted-foreground">Amount</TableHead>
+                                <TableHead className="text-muted-foreground">Transaction</TableHead>
+                                <TableHead className="text-muted-foreground text-right pr-8">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {payments.length > 0 ? (
                                 payments.map((payment) => (
                                     <TableRow key={payment.id} className="border-border hover:bg-muted transition-colors group">
-                                        <TableCell className="text-gray-300">
+                                        <TableCell className="text-foreground/80">
                                             {new Date(payment.created_at).toLocaleDateString()}
                                         </TableCell>
-                                        <TableCell className="text-white font-bold">{payment.plan_name}</TableCell>
-                                        <TableCell className="text-gray-300 font-medium">${payment.amount.toFixed(2)}</TableCell>
+                                        <TableCell className="text-foreground font-bold">{payment.plan_name}</TableCell>
+                                        <TableCell className="text-foreground/80 font-medium">${payment.amount.toFixed(2)}</TableCell>
                                         <TableCell>
                                             <a
                                                 href={`https://polygonscan.com/tx/${payment.tx_hash}`}
@@ -334,7 +353,7 @@ export default function BillingPage() {
                                         <TableCell className="text-right pr-8">
                                             <button
                                                 onClick={() => handleDownloadInvoice(payment)}
-                                                className="bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all border border-white/5 flex items-center gap-2 ml-auto"
+                                                className="bg-muted hover:bg-accent text-foreground/80 hover:text-foreground px-3 py-1.5 rounded-lg text-xs font-bold transition-all border border-border flex items-center gap-2 ml-auto"
                                             >
                                                 <FileText className="w-3.5 h-3.5 text-primary" />
                                                 Invoice

@@ -9,8 +9,10 @@ import {
     TrendingUp,
     LucideIcon
 } from "lucide-react";
+import Link from 'next/link';
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
 import {
     AreaChart,
     Area,
@@ -39,6 +41,7 @@ export default function DashboardPage() {
     const [chartData, setChartData] = useState<any[]>([]);
     const [recentActivity, setRecentActivity] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [hasData, setHasData] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -71,11 +74,34 @@ export default function DashboardPage() {
                     const totalSearches = history.length;
                     const totalLeads = history.reduce((acc, curr) => acc + (curr.results_count || 0), 0);
 
+                    // Calculate real trends (comparing this week vs previous week)
+                    const sevenDaysAgo = new Date();
+                    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                    const fourteenDaysAgo = new Date();
+                    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
+                    const lastWeekHistory = history.filter(item => new Date(item.created_at) >= sevenDaysAgo);
+                    const previousWeekHistory = history.filter(item => {
+                        const date = new Date(item.created_at);
+                        return date >= fourteenDaysAgo && date < sevenDaysAgo;
+                    });
+
+                    const lastWeekLeads = lastWeekHistory.reduce((acc, curr) => acc + (curr.results_count || 0), 0);
+                    const previousWeekLeads = previousWeekHistory.reduce((acc, curr) => acc + (curr.results_count || 0), 0);
+
+                    const formatTrend = (current: number, previous: number) => {
+                        if (previous === 0) return current > 0 ? "New Growth" : "No Activity";
+                        const percent = Math.round(((current - previous) / previous) * 100);
+                        return `${percent >= 0 ? "+" : ""}${percent}% from last week`;
+                    };
+
                     setStats({
                         credits: profile?.credits || 0,
                         totalSearches,
-                        totalLeads
-                    });
+                        totalLeads,
+                        searchTrend: formatTrend(lastWeekHistory.length, previousWeekHistory.length),
+                        leadTrend: formatTrend(lastWeekLeads, previousWeekLeads)
+                    } as any);
 
                     // 3. Process Chart Data (Last 7 Days)
                     const last7Days = [...Array(7)].map((_, i) => {
@@ -131,14 +157,14 @@ export default function DashboardPage() {
             value: stats.totalSearches.toLocaleString(),
             icon: Search,
             color: "text-blue-400",
-            trend: "+12% from last week"
+            trend: (stats as any).searchTrend
         },
         {
             label: "Leads Extracted",
             value: stats.totalLeads.toLocaleString(),
             icon: Target,
             color: "text-indigo-400",
-            trend: "+24% from last week"
+            trend: (stats as any).leadTrend
         },
     ];
 
@@ -154,8 +180,8 @@ export default function DashboardPage() {
         <div className="space-y-8 animate-in fade-in duration-700">
             {/* Header */}
             <div>
-                <h2 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h2>
-                <p className="text-gray-400 max-w-2xl">
+                <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">Welcome Back</h2>
+                <p className="text-muted-foreground max-w-2xl">
                     Here's what's happening with your lead generation campaigns.
                 </p>
             </div>
@@ -168,14 +194,14 @@ export default function DashboardPage() {
                             <stat.icon className="h-24 w-24 -mr-8 -mt-8" />
                         </div>
                         <div className="flex items-center gap-4 mb-4">
-                            <div className={`p-3 rounded-xl bg-white/5 ${stat.color}`}>
+                            <div className={`p-3 rounded-xl bg-muted ${stat.color}`}>
                                 <stat.icon className="h-6 w-6" />
                             </div>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-gray-400 mb-1">{stat.label}</p>
+                            <p className="text-sm font-medium text-muted-foreground mb-1">{stat.label}</p>
                             <div className="flex items-baseline gap-2">
-                                <h3 className="text-3xl font-bold text-white tracking-tight">{stat.value}</h3>
+                                <h3 className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</h3>
                                 {stat.trend && (
                                     <span className="text-xs font-medium text-indigo-400/80">{stat.trend}</span>
                                 )}
@@ -190,13 +216,15 @@ export default function DashboardPage() {
                 <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-lg font-semibold text-white">Leads Performance</h3>
-                            <p className="text-sm text-gray-500">Number of leads extracted over the last 7 days</p>
+                            <h3 className="text-lg font-semibold text-foreground">Leads Performance</h3>
+                            <p className="text-sm text-muted-foreground">Number of leads extracted over the last 7 days</p>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-lg border border-white/5">
-                            <TrendingUp className="h-4 w-4 text-emerald-400" />
-                            <span className="text-xs font-medium text-gray-300">Growth View</span>
-                        </div>
+                        {hasData && (
+                            <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-lg border border-border">
+                                <TrendingUp className="h-4 w-4 text-emerald-400" />
+                                <span className="text-xs font-medium text-muted-foreground">Growth View</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="h-[300px] w-full">
@@ -250,8 +278,8 @@ export default function DashboardPage() {
                 {/* Recent Activity */}
                 <div className="bg-card border border-border rounded-2xl p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
-                        <History className="h-5 w-5 text-gray-500" />
+                        <h3 className="text-lg font-semibold text-foreground">Recent Activity</h3>
+                        <History className="h-5 w-5 text-muted-foreground" />
                     </div>
 
                     <div className="space-y-6">
@@ -263,18 +291,18 @@ export default function DashboardPage() {
                                             <Search className="h-4 w-4 text-indigo-400" />
                                         </div>
                                     </div>
-                                    <div className="flex-1 border-b border-white/5 pb-4 last:border-0">
+                                    <div className="flex-1 border-b border-border pb-4 last:border-0">
                                         <div className="flex justify-between items-start mb-1">
-                                            <p className="text-sm font-medium text-white group-hover:text-indigo-400 transition-colors">
+                                            <p className="text-sm font-medium text-foreground group-hover:text-indigo-400 transition-colors">
                                                 {activity.keyword}
                                             </p>
-                                            <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider">
                                                 {new Date(activity.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-gray-500 mb-2">in {activity.location}</p>
+                                        <p className="text-xs text-muted-foreground mb-2">in {activity.location}</p>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/5 text-gray-400">
+                                            <span className="text-[10px] px-2 py-0.5 rounded bg-muted border border-border text-muted-foreground">
                                                 {activity.results_count} leads
                                             </span>
                                         </div>
@@ -283,11 +311,14 @@ export default function DashboardPage() {
                             ))
                         ) : (
                             <div className="text-center py-12">
-                                <Search className="h-8 w-8 text-gray-600 mx-auto mb-3 opacity-20" />
-                                <p className="text-sm text-gray-500">No recent activity found.</p>
-                                <button className="text-xs text-indigo-400 mt-4 hover:underline">
-                                    Start your first search
-                                </button>
+                                <Search className="h-8 w-8 text-muted-foreground mx-auto mb-3 opacity-20" />
+                                <p className="text-sm text-muted-foreground mb-6">No recent search activity found in your account.</p>
+                                <Link href="/dashboard/search">
+                                    <Button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 rounded-xl shadow-lg shadow-indigo-600/20 active:scale-95 transition-all">
+                                        <Search className="h-4 w-4 mr-2" />
+                                        Start your first search
+                                    </Button>
+                                </Link>
                             </div>
                         )}
                     </div>

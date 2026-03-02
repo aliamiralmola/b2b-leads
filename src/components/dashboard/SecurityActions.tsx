@@ -56,18 +56,18 @@ export function SecurityActions() {
     return (
         <div className="space-y-6">
             {/* Session Management UI */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 rounded-2xl border border-white/5 bg-white/[0.01] gap-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 rounded-2xl border border-border bg-muted/30 gap-6">
                 <div className="space-y-1">
-                    <p className="font-bold text-white text-lg">Active Sessions</p>
-                    <p className="text-sm text-gray-500">Manage your active sessions across different devices and browsers.</p>
-                    <div className="flex items-center gap-2 mt-4 text-[10px] uppercase font-black tracking-widest text-[#6366f1]">
-                        <div className="w-2 h-2 rounded-full bg-[#6366f1] animate-pulse" />
+                    <p className="font-bold text-foreground text-lg">Active Sessions</p>
+                    <p className="text-sm text-muted-foreground">Manage your active sessions across different devices and browsers.</p>
+                    <div className="flex items-center gap-2 mt-4 text-[10px] uppercase font-black tracking-widest text-indigo-500">
+                        <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                         <span>Current Device: Windows PC (Chrome) - Verified Session</span>
                     </div>
                 </div>
                 <Button
                     variant="outline"
-                    className="border-white/10 text-white hover:bg-white/5 h-12 px-6 font-bold rounded-xl border-2"
+                    className="border-border text-foreground hover:bg-accent h-12 px-6 font-bold rounded-xl border-2"
                     onClick={handleSignOutAll}
                     disabled={isLoading}
                 >
@@ -89,10 +89,10 @@ export function SecurityActions() {
                                 Delete Account
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="bg-[#0a0a0a] border-white/5 text-white">
+                        <DialogContent className="bg-card border-border shadow-2xl rounded-2xl sm:max-w-md">
                             <DialogHeader>
                                 <DialogTitle>Are you absolutely sure?</DialogTitle>
-                                <DialogDescription className="text-gray-400">
+                                <DialogDescription className="text-muted-foreground">
                                     This action cannot be undone. This will permanently delete your account and remove your data from our servers.
                                 </DialogDescription>
                             </DialogHeader>
@@ -100,7 +100,7 @@ export function SecurityActions() {
                                 <Button
                                     variant="ghost"
                                     onClick={() => setIsDeleteDialogOpen(false)}
-                                    className="text-gray-400 hover:text-white"
+                                    className="text-muted-foreground hover:text-foreground"
                                 >
                                     Cancel
                                 </Button>

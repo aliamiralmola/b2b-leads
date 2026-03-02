@@ -30,19 +30,19 @@ export const metadata = {
 
 export default function AffiliatesPage() {
     return (
-        <div className="flex flex-col min-h-screen bg-black text-zinc-50 font-sans selection:bg-emerald-500/30">
+        <div className="flex flex-col min-h-screen bg-background text-foreground font-sans selection:bg-emerald-500/30">
             {/* Navbar */}
-            <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+            <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 shrink-0">
                         <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
-                        <span className="font-bold text-xl tracking-tight">b2bleads</span>
+                        <span className="font-bold text-xl tracking-tight text-foreground">b2bleads</span>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-                        <Link href="/#features" className="hover:text-white transition-colors">Features</Link>
-                        <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
+                    <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+                        <Link href="/#features" className="hover:text-foreground transition-colors">Features</Link>
+                        <Link href="/#pricing" className="hover:text-foreground transition-colors">Pricing</Link>
                         <Link href="/affiliates" className="text-emerald-400 font-semibold flex items-center gap-1.5">
                             <DollarSign className="w-3.5 h-3.5" />
                             Affiliates
@@ -52,7 +52,7 @@ export default function AffiliatesPage() {
                     <div className="flex items-center gap-3">
                         <Button
                             variant="ghost"
-                            className="hidden md:inline-flex text-zinc-300 hover:text-white hover:bg-white/10"
+                            className="hidden md:inline-flex text-muted-foreground hover:text-foreground hover:bg-muted"
                             asChild
                         >
                             <Link href="/login">Log in</Link>
@@ -84,7 +84,7 @@ export default function AffiliatesPage() {
                             Partner Program — Now Open
                         </Badge>
 
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 max-w-5xl mx-auto bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 max-w-5xl mx-auto bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/60">
                             Earn{" "}
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-300">
                                 50% Recurring
@@ -92,7 +92,7 @@ export default function AffiliatesPage() {
                             Commission Forever
                         </h1>
 
-                        <p className="text-lg md:text-xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
                             Promote the world&apos;s easiest B2B Lead Scraper and build passive income. Every
                             month your referrals stay subscribed, you earn — forever.
                         </p>
@@ -110,14 +110,14 @@ export default function AffiliatesPage() {
                             <Button
                                 size="lg"
                                 variant="outline"
-                                className="h-14 px-8 text-base border-white/10 text-white hover:bg-white/5 w-full sm:w-auto backdrop-blur-sm"
+                                className="h-14 px-8 text-base border-border text-foreground hover:bg-muted w-full sm:w-auto backdrop-blur-sm"
                                 asChild
                             >
                                 <Link href="/#pricing">See Our Pricing</Link>
                             </Button>
                         </div>
 
-                        <div className="mt-16 flex items-center justify-center gap-8 text-sm text-zinc-500 font-medium flex-wrap">
+                        <div className="mt-16 flex items-center justify-center gap-8 text-sm text-muted-foreground font-medium flex-wrap">
                             <div className="flex items-center gap-2">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                                 Free to join
@@ -135,36 +135,36 @@ export default function AffiliatesPage() {
                 </section>
 
                 {/* Calculated Earnings Section */}
-                <section className="py-24 bg-black relative">
+                <section className="py-24 bg-background relative">
                     <div className="container mx-auto px-4 relative z-10">
                         <EarningsCalculator />
                     </div>
                 </section>
 
                 {/* Benefits Section */}
-                <section className="py-28 bg-zinc-950 border-y border-white/5 relative">
+                <section className="py-28 bg-muted/30 border-y border-border relative">
                     <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center mb-20">
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">
                                 Why partners love us
                             </h2>
-                            <p className="text-zinc-400 max-w-xl mx-auto text-lg">
+                            <p className="text-muted-foreground max-w-xl mx-auto text-lg">
                                 We&apos;ve built one of the most rewarding affiliate programs in the B2B SaaS space.
                             </p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                             {/* Card 1 */}
-                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-emerald-500/50 transition-colors duration-500 group">
+                            <Card className="bg-card backdrop-blur border-border hover:border-emerald-500/50 transition-colors duration-500 group">
                                 <CardHeader>
                                     <div className="w-14 h-14 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all duration-500">
                                         <DollarSign className="h-7 w-7 text-emerald-400" />
                                     </div>
-                                    <CardTitle className="text-2xl text-white">High Commission</CardTitle>
+                                    <CardTitle className="text-2xl text-foreground">High Commission</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-zinc-400 leading-relaxed text-lg">
+                                    <p className="text-muted-foreground leading-relaxed text-lg">
                                         Earn a flat{" "}
                                         <span className="text-emerald-400 font-semibold">50% commission</span> on every
                                         subscription your referrals pay — not just the first month, but every single
@@ -174,15 +174,15 @@ export default function AffiliatesPage() {
                             </Card>
 
                             {/* Card 2 */}
-                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-teal-500/50 transition-colors duration-500 group">
+                            <Card className="bg-card backdrop-blur border-border hover:border-teal-500/50 transition-colors duration-500 group">
                                 <CardHeader>
                                     <div className="w-14 h-14 rounded-xl bg-teal-500/10 flex items-center justify-center mb-6 group-hover:bg-teal-500/20 group-hover:scale-110 transition-all duration-500">
                                         <Cookie className="h-7 w-7 text-teal-400" />
                                     </div>
-                                    <CardTitle className="text-2xl text-white">30-Day Cookies</CardTitle>
+                                    <CardTitle className="text-2xl text-foreground">30-Day Cookies</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-zinc-400 leading-relaxed text-lg">
+                                    <p className="text-muted-foreground leading-relaxed text-lg">
                                         Our <span className="text-teal-400 font-semibold">30-day attribution window</span>{" "}
                                         means you get credit even if your referral takes a few weeks to convert. More
                                         time = more commission.
@@ -191,15 +191,15 @@ export default function AffiliatesPage() {
                             </Card>
 
                             {/* Card 3 */}
-                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-cyan-500/50 transition-colors duration-500 group">
+                            <Card className="bg-card backdrop-blur border-border hover:border-cyan-500/50 transition-colors duration-500 group">
                                 <CardHeader>
                                     <div className="w-14 h-14 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 group-hover:bg-cyan-500/20 group-hover:scale-110 transition-all duration-500">
                                         <CalendarCheck className="h-7 w-7 text-cyan-400" />
                                     </div>
-                                    <CardTitle className="text-2xl text-white">Monthly Payouts</CardTitle>
+                                    <CardTitle className="text-2xl text-foreground">Monthly Payouts</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-zinc-400 leading-relaxed text-lg">
+                                    <p className="text-muted-foreground leading-relaxed text-lg">
                                         Get paid every month like clockwork.{" "}
                                         <span className="text-cyan-400 font-semibold">No minimum thresholds</span>, no
                                         delays. Just consistent passive income deposited straight to you.
@@ -218,10 +218,10 @@ export default function AffiliatesPage() {
 
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center mb-20">
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">
                                 How it works
                             </h2>
-                            <p className="text-zinc-400 max-w-xl mx-auto text-lg">
+                            <p className="text-muted-foreground max-w-xl mx-auto text-lg">
                                 Start earning in three simple steps. No tech experience needed.
                             </p>
                         </div>
@@ -240,8 +240,8 @@ export default function AffiliatesPage() {
                                             1
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-3">Sign Up</h3>
-                                    <p className="text-zinc-400 leading-relaxed">
+                                    <h3 className="text-xl font-bold text-foreground mb-3">Sign Up</h3>
+                                    <p className="text-muted-foreground leading-relaxed">
                                         Create your free partner account in under 60 seconds. No approval process, no waiting — instant access.
                                     </p>
                                 </div>
@@ -254,8 +254,8 @@ export default function AffiliatesPage() {
                                             2
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-3">Get Your Link</h3>
-                                    <p className="text-zinc-400 leading-relaxed">
+                                    <h3 className="text-xl font-bold text-foreground mb-3">Get Your Link</h3>
+                                    <p className="text-muted-foreground leading-relaxed">
                                         Grab your unique referral link from your affiliate dashboard and start sharing it anywhere — blog, social, email.
                                     </p>
                                 </div>
@@ -268,8 +268,8 @@ export default function AffiliatesPage() {
                                             3
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white mb-3">Get Paid</h3>
-                                    <p className="text-zinc-400 leading-relaxed">
+                                    <h3 className="text-xl font-bold text-foreground mb-3">Get Paid</h3>
+                                    <p className="text-muted-foreground leading-relaxed">
                                         Every time someone subscribes through your link, 50% of their payment lands in your account. Every month. Forever.
                                     </p>
                                 </div>
@@ -279,48 +279,48 @@ export default function AffiliatesPage() {
                 </section>
 
                 {/* Marketing Assets Section */}
-                <section className="py-28 bg-zinc-950 border-t border-white/5 relative">
+                <section className="py-28 bg-muted/30 border-t border-border relative">
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center mb-16">
-                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">
+                            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">
                                 Marketing Assets
                             </h2>
-                            <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
+                            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
                                 We've done the heavy lifting for you. Just copy, paste, and start earning. Get access to 3 pre-written email templates and 5 LinkedIn post templates.
                             </p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-emerald-500/50 transition-colors">
+                            <Card className="bg-card backdrop-blur border-border hover:border-emerald-500/50 transition-colors">
                                 <CardHeader>
                                     <div className="flex items-center gap-3 mb-2">
                                         <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
                                             <Mail className="h-5 w-5 text-blue-400" />
                                         </div>
-                                        <CardTitle className="text-xl text-white">Email Templates (3)</CardTitle>
+                                        <CardTitle className="text-xl text-foreground">Email Templates (3)</CardTitle>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-zinc-400 mb-6">High-converting cold emails and newsletter mentions designed to get clicks.</p>
-                                    <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5 disabled:opacity-50">
+                                    <p className="text-muted-foreground mb-6">High-converting cold emails and newsletter mentions designed to get clicks.</p>
+                                    <Button variant="outline" className="w-full border-border text-foreground hover:bg-muted disabled:opacity-50">
                                         <Copy className="w-4 h-4 mr-2" />
                                         Available in Dashboard
                                     </Button>
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-emerald-500/50 transition-colors">
+                            <Card className="bg-card backdrop-blur border-border hover:border-emerald-500/50 transition-colors">
                                 <CardHeader>
                                     <div className="flex items-center gap-3 mb-2">
                                         <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center">
                                             <Linkedin className="h-5 w-5 text-sky-400" />
                                         </div>
-                                        <CardTitle className="text-xl text-white">LinkedIn Posts (5)</CardTitle>
+                                        <CardTitle className="text-xl text-foreground">LinkedIn Posts (5)</CardTitle>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-zinc-400 mb-6">Engaging social media posts with hooks and proven frameworks for B2B audiences.</p>
-                                    <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5 disabled:opacity-50">
+                                    <p className="text-muted-foreground mb-6">Engaging social media posts with hooks and proven frameworks for B2B audiences.</p>
+                                    <Button variant="outline" className="w-full border-border text-foreground hover:bg-muted disabled:opacity-50">
                                         <Copy className="w-4 h-4 mr-2" />
                                         Available in Dashboard
                                     </Button>
@@ -331,13 +331,13 @@ export default function AffiliatesPage() {
                 </section>
 
                 {/* Payout Guarantee Section */}
-                <section className="py-24 bg-black relative border-t border-white/5">
+                <section className="py-24 bg-background relative border-t border-border">
                     <div className="container mx-auto px-4 text-center">
                         <div className="w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto mb-6">
                             <ShieldCheck className="h-8 w-8 text-emerald-400" />
                         </div>
-                        <h2 className="text-3xl font-bold mb-4 text-white">Payout Guarantee</h2>
-                        <p className="text-zinc-400 max-w-xl mx-auto text-lg mb-8">
+                        <h2 className="text-3xl font-bold mb-4 text-foreground">Payout Guarantee</h2>
+                        <p className="text-muted-foreground max-w-xl mx-auto text-lg mb-8">
                             We process all payouts reliably on the 1st of every month. No excuses, no delays.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
@@ -358,16 +358,16 @@ export default function AffiliatesPage() {
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-28 border-t border-white/5">
+                <section className="py-28 border-t border-border">
                     <div className="container mx-auto px-4">
-                        <div className="max-w-3xl mx-auto text-center bg-gradient-to-br from-emerald-950/60 to-teal-950/40 border border-emerald-500/20 rounded-3xl p-12 md:p-16 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
+                        <div className="max-w-3xl mx-auto text-center bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border border-emerald-500/20 rounded-3xl p-12 md:p-16 shadow-[0_0_60px_-20px_rgba(16,185,129,0.4)]">
                             <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 flex items-center justify-center mx-auto mb-8">
                                 <Zap className="h-8 w-8 text-emerald-400" />
                             </div>
-                            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-6">
+                            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6">
                                 Ready to start earning?
                             </h2>
-                            <p className="text-zinc-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+                            <p className="text-muted-foreground text-lg mb-10 max-w-xl mx-auto leading-relaxed">
                                 Join hundreds of partners already earning passive income. Sign up free and share
                                 your link today.
                             </p>
@@ -380,33 +380,33 @@ export default function AffiliatesPage() {
                                     Join Partner Program <ArrowRight className="ml-2 h-5 w-5" />
                                 </Link>
                             </Button>
-                            <p className="text-zinc-600 text-sm mt-6">No credit card needed · Free forever</p>
+                            <p className="text-muted-foreground/60 text-sm mt-6">No credit card needed · Free forever</p>
                         </div>
                     </div>
                 </section>
             </main>
 
             {/* Footer */}
-            <footer className="border-t border-white/10 bg-black pt-10 pb-8">
+            <footer className="border-t border-border bg-background pt-10 pb-8">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <Link href="/" className="flex items-center gap-2">
                             <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
-                            <span className="font-bold text-xl tracking-tight text-white">b2bleads</span>
+                            <span className="font-bold text-xl tracking-tight text-foreground">b2bleads</span>
                         </Link>
-                        <div className="flex gap-8 text-sm font-medium text-zinc-400 flex-wrap justify-center">
-                            <Link href="/privacy" className="hover:text-white transition-colors">
+                        <div className="flex gap-8 text-sm font-medium text-muted-foreground flex-wrap justify-center">
+                            <Link href="/privacy" className="hover:text-foreground transition-colors">
                                 Privacy Policy
                             </Link>
-                            <Link href="/terms" className="hover:text-white transition-colors">
+                            <Link href="/terms" className="hover:text-foreground transition-colors">
                                 Terms of Service
                             </Link>
-                            <Link href="/contact" className="hover:text-white transition-colors">
+                            <Link href="/contact" className="hover:text-foreground transition-colors">
                                 Contact Support
                             </Link>
                         </div>
                     </div>
-                    <div className="text-center text-zinc-600 text-sm mt-8">
+                    <div className="text-center text-muted-foreground/60 text-sm mt-8">
                         &copy; {new Date().getFullYear()} b2bleads. All rights reserved.
                     </div>
                 </div>

@@ -43,7 +43,7 @@ export default async function PaymentsPage() {
             <div className="mb-12">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-2xl font-semibold text-white">Available Packages</h2>
-                    <div className="flex items-center gap-2 text-xs text-gray-500 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
+                    <div className="flex items-center gap-2 text-xs text-gray-500 bg-muted/50 border border-border">
                         <HelpCircle className="w-3.5 h-3.5" />
                         1 USDT ≈ 1 USD
                     </div>
@@ -87,7 +87,7 @@ export default async function PaymentsPage() {
                             </ul>
 
                             <div className="relative z-10 mt-auto">
-                                <a href="/dashboard/billing" className={`block w-full text-center px-4 py-2.5 mt-4 text-sm font-bold transition-all rounded-xl ${pkg.popular ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/20'}`}>
+                                <a href="/dashboard/billing" className={`block w-full text-center px-4 py-2.5 mt-4 text-sm font-bold transition-all rounded-xl ${pkg.popular ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20' : 'bg-muted border border-border text-foreground hover:bg-muted/80'}`}>
                                     Get {pkg.name}
                                 </a>
                             </div>
@@ -102,7 +102,7 @@ export default async function PaymentsPage() {
 
                 <div className="bg-[#0a0a0a] border border-white/5 rounded-2xl overflow-hidden">
                     {(!payments || payments.length === 0) ? (
-                        <div className="p-8 text-center bg-white/[0.02]">
+                        <div className="p-8 text-center bg-muted/30">
                             <p className="text-gray-400">You don't have any subscription history yet.</p>
                         </div>
                     ) : (
@@ -124,7 +124,7 @@ export default async function PaymentsPage() {
                                         endDate.setDate(endDate.getDate() + 30); // Assuming 30 days subscription
 
                                         return (
-                                            <tr key={payment.id} className="border-b border-white/5 hover:bg-white/[0.02] text-sm transition-colors">
+                                            <tr key={payment.id} className="border-b border-white/5 hover:bg-muted/30 text-sm transition-colors">
                                                 <td className="p-4 font-medium text-white">{payment.plan_name}</td>
                                                 <td className="p-4 text-gray-300">{payment.amount} USDT</td>
                                                 <td className="p-4 text-gray-400">{startDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>

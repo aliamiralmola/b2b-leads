@@ -28,13 +28,13 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
-  --sidebar-background: 222.2 84% 4.9%;
-  --sidebar-foreground: 210 40% 96%;
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 222.2 84% 4.9%;
   --sidebar-primary: 221.2 83.2% 53.3%;
   --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 217.2 32.6% 17.5%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217.2 32.6% 17.5%;
+  --sidebar-accent: 210 40% 94%;
+  --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+  --sidebar-border: 214.3 31.8% 91.4%;
   --sidebar-ring: 221.2 83.2% 53.3%;
 }
 
@@ -179,12 +179,23 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+:root .glass {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 .glass-card {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+:root .glass-card {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* ─── Micro-Interactions ────────────────────────── */

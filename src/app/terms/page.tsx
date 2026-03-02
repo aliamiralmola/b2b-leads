@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 export default function TermsOfService() {
     return (
-        <div className="min-h-screen bg-black text-zinc-50 font-sans selection:bg-indigo-500/30 py-20 px-4">
+        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30 py-20 px-4">
             <div className="max-w-4xl mx-auto">
                 <Link
                     href="/"

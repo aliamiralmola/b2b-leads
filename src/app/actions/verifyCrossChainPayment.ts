@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { verifyOrigin } from "@/utils/security";
 import { ethers } from "ethers";
 import { revalidatePath } from "next/cache";
 
@@ -22,6 +23,7 @@ const USDT_DECIMALS = 6;
 const CREDITS_PER_USD = 10;
 
 export async function verifyCrossChainPayment(txHash: string) {
+    await verifyOrigin();
     const supabase = await createClient();
 
     // 1. Verify Authentication
@@ -30,10 +32,28 @@ export async function verifyCrossChainPayment(txHash: string) {
         return { success: false, message: "Unauthorized. Please log in." };
     }
 
+    // 1.2 Rate Limiting
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count: attemptCount, error: countError } = await supabase
+        .from('payments')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .gt('created_at', tenMinutesAgo);
+
+    if (!countError && attemptCount !== null && attemptCount >= 5) {
+        return { success: false, message: "Too many verification attempts. Please wait." };
+    }
+
     // 2. Ensure we have the admin wallet address configured
-    const adminWallet = process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS?.toLowerCase();
+    const adminWallet = (process.env.ADMIN_WALLET_ADDRESS || process.env.NEXT_PUBLIC_ADMIN_WALLET_ADDRESS)?.toLowerCase();
     if (!adminWallet) {
         return { success: false, message: "System misconfiguration: Admin wallet not set." };
+    }
+
+    // 2.5 Validate txHash format
+    const txHashRegex = /^0x[a-fA-F0-9]{64}$/;
+    if (!txHashRegex.test(txHash)) {
+        return { success: false, message: "Invalid transaction hash format." };
     }
 
     try {

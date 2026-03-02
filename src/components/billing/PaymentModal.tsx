@@ -78,64 +78,64 @@ export function PaymentModal({ open, onOpenChange, planName, amount, onPaymentCo
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[480px] bg-card border-border p-0 overflow-hidden text-foreground flex flex-col max-h-[90vh]">
-                <DialogHeader className="p-6 border-b border-white/5 bg-white/[0.02] shrink-0">
+            <DialogContent className="sm:max-w-[480px] bg-card border-border p-0 overflow-hidden text-foreground flex flex-col max-h-[90vh] shadow-2xl">
+                <DialogHeader className="p-6 border-b border-border bg-muted/30 shrink-0">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-indigo-600/20 flex items-center justify-center">
-                            <CreditCard className="w-6 h-6 text-indigo-400" />
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <CreditCard className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                            <DialogTitle className="text-xl font-bold text-white tracking-tight">Checkout</DialogTitle>
-                            <p className="text-gray-400 text-sm font-medium">
-                                Subscription: <span className="text-white">{planName}</span>
+                            <DialogTitle className="text-xl font-black text-foreground tracking-tight uppercase">Checkout</DialogTitle>
+                            <p className="text-muted-foreground text-sm font-bold">
+                                Subscription: <span className="text-primary">{planName}</span>
                             </p>
                         </div>
                     </div>
                 </DialogHeader>
 
                 <div className="flex-1 overflow-y-auto p-0 custom-scrollbar bg-card flex flex-col">
-                    <div className="flex border-b border-white/5 bg-white/[0.01]">
-                        <button className="flex-1 py-3 text-xs font-bold border-b-2 border-indigo-500 text-white flex items-center justify-center gap-2">
+                    <div className="flex border-b border-border bg-muted/20">
+                        <button className="flex-1 py-3 text-xs font-black uppercase tracking-widest border-b-2 border-primary text-primary flex items-center justify-center gap-2">
                             <Send className="w-3 h-3" />
                             Crypto (USDT)
                         </button>
-                        <button className="flex-1 py-3 text-xs font-bold text-gray-500 hover:text-gray-300 flex items-center justify-center gap-2 border-b-2 border-transparent transition-colors">
+                        <button className="flex-1 py-3 text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 border-b-2 border-transparent transition-colors opacity-50 cursor-not-allowed">
                             <CreditCard className="w-3 h-3" />
                             Credit Card
                         </button>
                     </div>
 
-                    <div className="p-6 space-y-6">
-                        <section className="space-y-3">
-                            <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">1. Connection Status</h3>
+                    <div className="p-6 space-y-8">
+                        <section className="space-y-4">
+                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] px-1">1. Connection Status</h3>
                             <WalletStatus requiredAmount={amount} />
                         </section>
 
                         <section className="space-y-4">
-                            <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest px-1">2. Payment Summary</h3>
+                            <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] px-1">2. Payment Summary</h3>
 
-                            <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
-                                <div className="p-4 space-y-3">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-400">Plan Price</span>
-                                        <span className="text-sm font-bold text-white">{amount} USDT</span>
+                            <div className="bg-muted/30 border border-border rounded-2xl overflow-hidden shadow-sm">
+                                <div className="p-5 space-y-4">
+                                    <div className="flex justify-between items-center text-sm font-semibold">
+                                        <span className="text-muted-foreground">Plan Price</span>
+                                        <span className="text-foreground">{amount} USDT</span>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-sm text-gray-400">Network Fee</span>
-                                        <span className="text-sm font-medium text-indigo-400">~0.01 MATIC</span>
+                                    <div className="flex justify-between items-center text-sm font-semibold">
+                                        <span className="text-muted-foreground">Network Fee</span>
+                                        <span className="text-primary font-bold">~0.01 MATIC</span>
                                     </div>
-                                    <div className="pt-3 border-t border-white/5 flex justify-between items-center">
-                                        <span className="text-sm font-bold text-white">Total Amount</span>
+                                    <div className="pt-4 border-t border-border flex justify-between items-center">
+                                        <span className="text-sm font-black text-foreground uppercase tracking-wider">Total Amount</span>
                                         <div className="text-right">
-                                            <p className="text-lg font-black text-white leading-none">{amount} USDT</p>
-                                            <p className="text-[10px] text-gray-500 font-bold mt-1 uppercase">+ NETWORK FEE</p>
+                                            <p className="text-2xl font-black text-primary leading-none tracking-tighter">{amount} USDT</p>
+                                            <p className="text-[9px] text-muted-foreground font-black mt-2 uppercase tracking-widest">+ NETWORK FEE</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="bg-indigo-600/5 px-4 py-3 flex items-start gap-3 border-t border-white/5">
-                                    <ShieldCheck className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
-                                    <p className="text-[11px] text-indigo-300 leading-relaxed font-medium">
+                                <div className="bg-primary/5 px-5 py-4 flex items-start gap-3 border-t border-border">
+                                    <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                                    <p className="text-[11px] text-primary/80 leading-relaxed font-bold">
                                         Funds will be transferred directly to the platform wallet for instant activation.
                                     </p>
                                 </div>
@@ -145,15 +145,15 @@ export function PaymentModal({ open, onOpenChange, planName, amount, onPaymentCo
                         <button
                             onClick={handleTransfer}
                             disabled={isLoading || !isConnected}
-                            className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 group ${isLoading
-                                ? 'bg-gray-800 text-gray-400 cursor-not-allowed'
-                                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20 active:scale-[0.98]'
+                            className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all duration-300 btn-press group ${isLoading
+                                ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                                : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 active:scale-[0.98]'
                                 }`}
                         >
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    Processing...
+                                    Verifying...
                                 </>
                             ) : (
                                 <>
@@ -163,17 +163,18 @@ export function PaymentModal({ open, onOpenChange, planName, amount, onPaymentCo
                             )}
                         </button>
 
-                        <div className="p-4 bg-white/[0.02] border border-dashed border-white/10 rounded-xl flex items-center justify-center text-center">
-                            <p className="text-[10px] text-gray-500 font-medium">
-                                Credit card payments are temporarily disabled for maintenance. Please use USDT for instant activation.
+                        <div className="p-4 bg-muted/50 border border-dashed border-border rounded-xl flex items-center justify-center text-center">
+                            <p className="text-[10px] text-muted-foreground font-bold leading-relaxed">
+                                Credit card payments are temporarily disabled for maintenance.<br />
+                                <span className="text-primary">Please use USDT for instant activation.</span>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="p-4 bg-muted border-t border-border flex items-center justify-center gap-2 text-[10px] text-gray-600 shrink-0 uppercase tracking-widest font-black">
-                    <Lock className="w-3 h-3 text-emerald-500" />
-                    Secure Direct Transfer • No Middleman • 100% Decentralized
+                <div className="p-5 bg-muted/30 border-t border-border flex items-center justify-center gap-3 text-[9px] text-muted-foreground shrink-0 uppercase tracking-[0.25em] font-black">
+                    <Lock className="w-3.5 h-3.5 text-emerald-500" />
+                    Direct Transfer • No Middleman • Decentralized
                 </div>
             </DialogContent>
         </Dialog>

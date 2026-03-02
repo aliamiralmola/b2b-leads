@@ -8,31 +8,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { PLANS, FREE_TRIAL_CREDITS } from "@/lib/plans";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-black text-zinc-50 font-sans selection:bg-indigo-500/30">
+    <div className="flex flex-col min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
-            <span className="font-bold text-xl tracking-tight text-white">b2bleads</span>
+            <span className="font-bold text-xl tracking-tight text-foreground">b2bleads</span>
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-            <Link href="#features" className="hover:text-white transition-colors">Features</Link>
-            <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
+            <Link href="#features" className="hover:text-foreground transition-colors">Features</Link>
+            <Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link>
             <Link href="/affiliates" className="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold flex items-center gap-1.5">
               <DollarSign className="w-3.5 h-3.5" /> Affiliates
             </Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button variant="ghost" className="hidden md:inline-flex text-zinc-300 hover:text-white hover:bg-white/10" asChild>
+            <ThemeToggle />
+            <Button variant="ghost" className="hidden md:inline-flex text-muted-foreground hover:text-foreground hover:bg-muted" asChild>
               <Link href="/login">Log in</Link>
             </Button>
             <Button className="hidden md:inline-flex bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all hover:shadow-[0_0_25px_rgba(79,70,229,0.6)]" asChild>
@@ -41,7 +43,7 @@ export default function Home() {
 
             {/* Mobile Menu Toggle (Issue 5) */}
             <button
-              className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -51,13 +53,17 @@ export default function Home() {
 
         {/* Mobile Navigation (Issue 5) */}
         {isMenuOpen && (
-          <div className="md:hidden border-b border-white/10 bg-black/95 backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
+          <div className="md:hidden border-b border-border bg-background/95 backdrop-blur-xl animate-in slide-in-from-top-4 duration-300">
             <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
-              <Link href="#features" className="text-lg font-medium text-zinc-300 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Features</Link>
-              <Link href="#pricing" className="text-lg font-medium text-zinc-300 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Pricing</Link>
+              <div className="flex items-center justify-between py-2">
+                <span className="text-lg font-medium text-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
+              <Link href="#features" className="text-lg font-medium text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMenuOpen(false)}>Features</Link>
+              <Link href="#pricing" className="text-lg font-medium text-muted-foreground hover:text-foreground py-2" onClick={() => setIsMenuOpen(false)}>Pricing</Link>
               <Link href="/affiliates" className="text-lg font-medium text-emerald-400 hover:text-emerald-300 py-2" onClick={() => setIsMenuOpen(false)}>Affiliates</Link>
-              <hr className="border-white/5 my-2" />
-              <Button variant="outline" className="w-full border-white/10 text-white" asChild onClick={() => setIsMenuOpen(false)}>
+              <hr className="border-border my-2" />
+              <Button variant="outline" className="w-full border-border text-foreground" asChild onClick={() => setIsMenuOpen(false)}>
                 <Link href="/login">Log in</Link>
               </Button>
               <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white border-0" asChild onClick={() => setIsMenuOpen(false)}>
@@ -81,10 +87,10 @@ export default function Home() {
               <Sparkles className="w-3 h-3 mr-2 inline-block" />
               New: AI-Powered Enrichment
             </Badge>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 max-w-5xl mx-auto bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/60">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 max-w-5xl mx-auto bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/60">
               Find Your Next High-Paying Client in Seconds
             </h1>
-            <p className="text-lg md:text-xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
               AI-powered lead extraction from Google Maps and LinkedIn. Get verified emails and phone numbers instantly, and fill your pipeline on autopilot.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -93,12 +99,12 @@ export default function Home() {
                   Start for Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-white/10 text-white hover:bg-white/5 w-full sm:w-auto backdrop-blur-sm" asChild>
+              <Button size="lg" variant="outline" className="h-14 px-8 text-base border-border text-foreground hover:bg-muted w-full sm:w-auto backdrop-blur-sm" asChild>
                 <Link href="#pricing">View Pricing</Link>
               </Button>
             </div>
 
-            <div className="mt-20 flex items-center justify-center gap-8 text-sm text-zinc-500 font-medium flex-wrap">
+            <div className="mt-20 flex items-center justify-center gap-8 text-sm text-muted-foreground font-medium flex-wrap">
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> No credit card required</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> {FREE_TRIAL_CREDITS} Free Leads</div>
               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-500" /> Cancel anytime</div>
@@ -107,55 +113,55 @@ export default function Home() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-32 bg-zinc-950 border-y border-white/5 relative">
+        <section id="features" className="py-32 bg-muted/30 border-y border-border relative">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">Everything you need to scale outbound</h2>
-              <p className="text-zinc-400 max-w-2xl mx-auto text-lg flex-wrap">Powerful extraction tools designed specifically for B2B growth teams and agencies.</p>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">Everything you need to scale outbound</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-lg flex-wrap">Powerful extraction tools designed specifically for B2B growth teams and agencies.</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {/* Feature 1 */}
-              <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-indigo-500/50 transition-colors duration-500 group">
+              <Card className="bg-card backdrop-blur border-border hover:border-indigo-500/50 transition-colors duration-500 group">
                 <CardHeader>
                   <div className="w-14 h-14 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:bg-indigo-500/20 group-hover:scale-110 transition-all duration-500">
                     <MapPin className="h-7 w-7 text-indigo-400" />
                   </div>
-                  <CardTitle className="text-2xl text-white">Google Maps Scraping</CardTitle>
+                  <CardTitle className="text-2xl text-foreground">Google Maps Scraping</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-zinc-400 leading-relaxed text-lg">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     Extract local businesses in high detail. Get names, websites, phone numbers, and reviews across any geography in minutes.
                   </p>
                 </CardContent>
               </Card>
 
               {/* Feature 2 */}
-              <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-blue-500/50 transition-colors duration-500 group">
+              <Card className="bg-card backdrop-blur border-border hover:border-blue-500/50 transition-colors duration-500 group">
                 <CardHeader>
                   <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500/20 group-hover:scale-110 transition-all duration-500">
                     <Linkedin className="h-7 w-7 text-blue-400" />
                   </div>
-                  <CardTitle className="text-2xl text-white">LinkedIn Extraction</CardTitle>
+                  <CardTitle className="text-2xl text-foreground">LinkedIn Extraction</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-zinc-400 leading-relaxed text-lg">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     Target decision-makers with precision. Scrape Sales Navigator searches to build hyper-targeted B2B contact lists.
                   </p>
                 </CardContent>
               </Card>
 
               {/* Feature 3 */}
-              <Card className="bg-black/50 backdrop-blur border-white/10 hover:border-purple-500/50 transition-colors duration-500 group">
+              <Card className="bg-card backdrop-blur border-border hover:border-purple-500/50 transition-colors duration-500 group">
                 <CardHeader>
                   <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all duration-500">
                     <Sparkles className="h-7 w-7 text-purple-400" />
                   </div>
-                  <CardTitle className="text-2xl text-white">AI Lead Qualification</CardTitle>
+                  <CardTitle className="text-2xl text-foreground">AI Lead Qualification</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-zinc-400 leading-relaxed text-lg">
+                  <p className="text-muted-foreground leading-relaxed text-lg">
                     Automatically score and enrich leads. Our AI determines intent and finds verified personal work emails effortlessly.
                   </p>
                 </CardContent>
@@ -173,15 +179,15 @@ export default function Home() {
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="text-center mb-20">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-white">Simple, transparent pricing</h2>
-              <p className="text-zinc-400 max-w-2xl mx-auto text-lg">Start for free, upgrade when you need more leads.</p>
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">Simple, transparent pricing</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto text-lg">Start for free, upgrade when you need more leads.</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
               {PLANS.map((plan) => (
                 <Card
                   key={plan.id}
-                  className={`bg-zinc-950/80 backdrop-blur border-white/10 relative flex flex-col p-4 md:p-6 transition-all duration-300 hover:border-indigo-500/50 ${plan.popular ? 'border-indigo-500 shadow-[0_0_30px_-5px_rgba(79,70,229,0.3)] lg:-translate-y-4' : ''
+                  className={`bg-card/80 backdrop-blur border-border relative flex flex-col p-4 md:p-6 transition-all duration-300 hover:border-indigo-500/50 ${plan.popular ? 'border-indigo-500 shadow-[0_0_30px_-5px_rgba(79,70,229,0.3)] lg:-translate-y-4' : ''
                     }`}
                 >
                   {plan.popular && (
@@ -190,20 +196,20 @@ export default function Home() {
                     </div>
                   )}
                   <CardHeader>
-                    <CardTitle className="text-2xl text-white font-bold">{plan.name}</CardTitle>
-                    <CardDescription className="text-zinc-400 text-base mt-2">{plan.description}</CardDescription>
+                    <CardTitle className="text-2xl text-foreground font-bold">{plan.name}</CardTitle>
+                    <CardDescription className="text-muted-foreground text-base mt-2">{plan.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 mt-4">
                     <div className="mb-8 flex items-end gap-2 flex-wrap">
-                      <span className="text-5xl font-extrabold text-white tracking-tight">${plan.price}</span>
+                      <span className="text-5xl font-extrabold text-foreground tracking-tight">${plan.price}</span>
                       {plan.originalPrice && (
-                        <span className="text-2xl text-zinc-500 line-through font-semibold mb-1">${plan.originalPrice}</span>
+                        <span className="text-2xl text-muted-foreground line-through font-semibold mb-1">${plan.originalPrice}</span>
                       )}
-                      <span className="text-zinc-500 text-lg font-medium mb-1">/mo</span>
+                      <span className="text-muted-foreground text-lg font-medium mb-1">/mo</span>
                     </div>
                     <ul className="space-y-4">
                       {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-start text-zinc-300 text-base">
+                        <li key={i} className="flex items-start text-muted-foreground text-base">
                           <CheckCircle2 className={`h-5 w-5 mr-3 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-indigo-400' : 'text-indigo-500'}`} />
                           {feature}
                         </li>
@@ -214,7 +220,7 @@ export default function Home() {
                     <Button
                       className={`w-full h-12 text-base font-semibold transition-all ${plan.popular
                         ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]'
-                        : 'bg-white text-black hover:bg-zinc-200'
+                        : 'bg-primary text-primary-foreground hover:bg-primary/90'
                         }`}
                       asChild
                     >
@@ -229,8 +235,8 @@ export default function Home() {
       </main>
 
       {/* Affiliate Teaser Banner */}
-      <section className="relative py-16 border-t border-white/5 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/40 via-black to-teal-950/30 pointer-events-none" />
+      <section className="relative py-16 border-t border-border overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-background to-teal-500/5 pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] opacity-20 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-emerald-500 to-transparent blur-[80px] rounded-full mix-blend-screen" />
         </div>
@@ -238,10 +244,10 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 mb-4 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 text-emerald-400 text-sm font-semibold">
             <DollarSign className="w-3.5 h-3.5" /> Partner Program
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">
             Want to earn money?
           </h2>
-          <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
+          <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
             Join our Affiliate Program and earn{" "}
             <span className="text-emerald-400 font-semibold">50% recurring commission forever</span>{" "}
             — for every customer you refer.
@@ -256,23 +262,23 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 bg-black pt-16 pb-8">
+      <footer className="border-t border-border bg-background pt-16 pb-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
             <div className="flex items-center gap-3">
               <Image src="/logo.png" alt="b2bleads logo" width={32} height={32} className="object-contain" />
-              <span className="font-bold text-2xl tracking-tight text-white">b2bleads</span>
+              <span className="font-bold text-2xl tracking-tight text-foreground">b2bleads</span>
             </div>
 
-            <div className="flex gap-8 text-sm font-medium text-zinc-400 flex-wrap justify-center">
-              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <Link href="/refund" className="hover:text-white transition-colors">Refund Policy</Link>
-              <Link href="/contact" className="hover:text-white transition-colors">Contact Support</Link>
+            <div className="flex gap-8 text-sm font-medium text-muted-foreground flex-wrap justify-center">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+              <Link href="/refund" className="hover:text-foreground transition-colors">Refund Policy</Link>
+              <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
             </div>
           </div>
 
-          <div className="text-center text-zinc-600 text-sm">
+          <div className="text-center text-muted-foreground/60 text-sm">
             &copy; {new Date().getFullYear()} b2bleads. All rights reserved.
           </div>
         </div>

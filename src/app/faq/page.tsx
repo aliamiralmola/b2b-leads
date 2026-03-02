@@ -44,7 +44,7 @@ const FAQS = [
 
 export default function FAQPage() {
     return (
-        <div className="min-h-screen bg-black text-zinc-50 font-sans py-20 px-4">
+        <div className="min-h-screen bg-background text-foreground font-sans py-20 px-4">
             <div className="max-w-3xl mx-auto">
                 <Link
                     href="/"

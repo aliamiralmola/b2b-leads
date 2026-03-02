@@ -7,10 +7,19 @@ import { usePathname } from "next/navigation";
 import {
     Home, Search, Database, Settings, LogOut, Bell,
     UserCircle, Users, Share2, CreditCard, Menu, X,
-    Bookmark, ChevronRight
+    Bookmark, ChevronRight, User, Key
 } from "lucide-react";
 import { signOut } from "@/app/login/actions";
+import { Notifications } from "./dashboard/Notifications";
 import { ThemeToggle } from "./theme-toggle";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -33,14 +42,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     return (
         <>
             <aside className={`fixed left-0 top-0 h-screen w-64 bg-card border-r border-border flex flex-col z-50 transition-transform duration-300 lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <div className="h-16 flex items-center justify-between px-6 border-b border-white/5">
+                <div className="h-16 flex items-center justify-between px-6 border-b border-border">
                     <Link href="/" className="flex items-center gap-2">
                         <Image src="/logo.png" alt="b2bleads logo" width={28} height={28} className="object-contain" />
-                        <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                        <span className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-muted-foreground">
                             b2bleads
                         </span>
                     </Link>
-                    <button onClick={onClose} className="lg:hidden text-gray-400 hover:text-white">
+                    <button onClick={onClose} className="lg:hidden text-muted-foreground hover:text-foreground">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
@@ -56,7 +65,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                                 title={route.name}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
                                     ? "bg-indigo-500/10 text-indigo-400"
-                                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                                     }`}
                             >
                                 <route.icon className="h-4 w-4" />
@@ -66,22 +75,22 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     })}
                 </div>
 
-                <div className="p-4 border-t border-white/5 space-y-4">
+                <div className="p-4 border-t border-border space-y-4">
                     <button
                         onClick={() => signOut()}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 w-full transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent w-full transition-colors"
                     >
                         <LogOut className="h-4 w-4" />
                         Log Out
                     </button>
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-2 px-3 text-[10px] font-medium text-gray-600 uppercase tracking-widest leading-none">
-                        <Link href="/terms" className="hover:text-gray-400 transition-colors">Terms</Link>
-                        <Link href="/privacy" className="hover:text-gray-400 transition-colors">Privacy</Link>
-                        <Link href="/refund" className="hover:text-gray-400 transition-colors">Refund</Link>
+                    <div className="flex flex-wrap gap-x-4 gap-y-2 px-3 text-[10px] font-medium text-muted-foreground uppercase tracking-widest leading-none">
+                        <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+                        <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+                        <Link href="/refund" className="hover:text-foreground transition-colors">Refund</Link>
                     </div>
 
-                    <div className="px-3 text-[9px] text-gray-700 leading-tight">
+                    <div className="px-3 text-[9px] text-muted-foreground/60 leading-tight">
                         &copy; {new Date().getFullYear()} b2bleads.ai<br />
                         Reg No: 12345678-A
                     </div>
@@ -110,21 +119,21 @@ export function DashboardHeader({ onMenuClick }: HeaderProps) {
             <div className="flex items-center gap-4">
                 <button
                     onClick={onMenuClick}
-                    className="lg:hidden p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    className="lg:hidden p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg transition-colors"
                 >
                     <Menu className="h-5 w-5" />
                 </button>
                 <div className="flex items-center gap-2 text-sm">
-                    <Home className="h-4 w-4 text-gray-500" />
+                    <Home className="h-4 w-4 text-muted-foreground" />
                     {segments.map((segment, index) => {
                         const href = `/${segments.slice(0, index + 1).join('/')}`;
                         const isLast = index === segments.length - 1;
                         return (
                             <React.Fragment key={href}>
-                                <ChevronRight className="h-3 w-3 text-gray-600" />
+                                <ChevronRight className="h-3 w-3 text-muted-foreground" />
                                 <Link
                                     href={href}
-                                    className={`capitalize ${isLast ? 'text-white font-bold' : 'text-gray-500 hover:text-gray-300 transition-colors'}`}
+                                    className={`capitalize ${isLast ? 'text-foreground font-bold' : 'text-muted-foreground hover:text-foreground transition-colors'}`}
                                 >
                                     {segment.replace(/-/g, ' ')}
                                 </Link>
@@ -135,13 +144,35 @@ export function DashboardHeader({ onMenuClick }: HeaderProps) {
             </div>
             <div className="flex items-center gap-4">
                 <ThemeToggle />
-                <button className="text-gray-400 hover:text-white transition-colors relative" title="Notifications">
-                    <Bell className="h-5 w-5" />
-                    <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-                </button>
-                <button className="flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors" title="Profile">
-                    <UserCircle className="h-8 w-8 text-gray-400" />
-                </button>
+                <Notifications />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="flex items-center gap-2 p-1 rounded-full hover:bg-muted transition-all" title="Profile">
+                            <UserCircle className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors" />
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56 bg-card border-border p-2 rounded-2xl shadow-2xl">
+                        <DropdownMenuLabel className="px-3 py-2 text-xs font-black text-muted-foreground uppercase tracking-widest">Account Details</DropdownMenuLabel>
+                        <DropdownMenuSeparator className="bg-border" />
+                        <DropdownMenuItem asChild className="rounded-xl p-3 focus:bg-indigo-600/10 focus:text-indigo-400 cursor-pointer transition-colors">
+                            <Link href="/dashboard/settings" className="flex items-center w-full">
+                                <User className="mr-2 h-4 w-4" /> Profile Settings
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild className="rounded-xl p-3 focus:bg-indigo-600/10 focus:text-indigo-400 cursor-pointer transition-colors">
+                            <Link href="/dashboard/settings" className="flex items-center w-full">
+                                <Key className="mr-2 h-4 w-4" /> Security
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-border" />
+                        <DropdownMenuItem
+                            onClick={() => signOut()}
+                            className="rounded-xl p-3 focus:bg-red-500/10 focus:text-red-500 cursor-pointer text-red-400 transition-colors"
+                        >
+                            <LogOut className="mr-2 h-4 w-4" /> Log Out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </header>
     );
