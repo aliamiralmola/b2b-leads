@@ -14,28 +14,38 @@ import {
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
+import { sendSupportMessage } from '@/app/actions/adminActions';
+
 export function SupportWidgets() {
     const [isChatOpen, setIsChatOpen] = React.useState(false);
     const [isFeedbackOpen, setIsFeedbackOpen] = React.useState(false);
     const [chatMessage, setChatMessage] = React.useState('');
     const [isSending, setIsSending] = React.useState(false);
 
-    const handleSendChat = (e: React.FormEvent) => {
+    const handleSendChat = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!chatMessage.trim()) return;
 
         setIsSending(true);
-        // Mock sending
-        setTimeout(() => {
+        try {
+            await sendSupportMessage(chatMessage, 'chat');
             toast.success("Support ticket created! We'll reply via email.");
             setChatMessage('');
-            setIsSending(false);
             setIsChatOpen(false);
-        }, 1500);
+        } catch (error) {
+            toast.error("Failed to send message. Please try again later.");
+        } finally {
+            setIsSending(false);
+        }
     };
 
-    const handleFeedback = (type: 'positive' | 'negative') => {
-        toast.success(`Thanks for your ${type} feedback! We're improving.`);
+    const handleFeedback = async (type: 'positive' | 'negative') => {
+        try {
+            await sendSupportMessage(`Feedback: ${type.toUpperCase()}`, 'feedback');
+            toast.success(`Thanks for your ${type} feedback! We're improving.`);
+        } catch (error) {
+            toast.error("Feedback failed to sync.");
+        }
         setIsFeedbackOpen(false);
     };
 

@@ -9,10 +9,16 @@ import {
     DollarSign,
     Calendar,
     ArrowUpRight,
-    Check
+    Check,
+    Mail,
+    Linkedin
 } from "lucide-react";
 import { createAffiliateLink } from "@/app/actions/createAffiliateLink";
+import { fetchReferralHistory } from "@/app/actions/affiliates";
 import { createClient } from "@/utils/supabase/client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ReferralEntry {
     date: string;
@@ -28,17 +34,18 @@ export default function AffiliatePage() {
         signups: 0,
         earnings: "0.00"
     });
+    const [referralHistory, setReferralHistory] = useState<ReferralEntry[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isCopied, setIsCopied] = useState(false);
+    const [walletAddress, setWalletAddress] = useState("");
+    const [isUpdatingWallet, setIsUpdatingWallet] = useState(false);
+    const [origin, setOrigin] = useState("");
     const supabase = createClient();
 
-    const referralHistory: ReferralEntry[] = [
-        { date: "2024-05-20", email: "al***@gmail.com", status: "Active", commission: "$5.00" },
-        { date: "2024-05-18", email: "jo***@outlook.com", status: "Pending", commission: "$0.00" },
-        { date: "2024-05-15", email: "sa***@company.io", status: "Active", commission: "$12.50" },
-    ];
-
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin);
+        }
         async function initAffiliate() {
             setIsLoading(true);
             try {
@@ -53,7 +60,7 @@ export default function AffiliatePage() {
                 if (user) {
                     const { data: affiliateData } = await supabase
                         .from('affiliates')
-                        .select('clicks_count, signups_count, earnings')
+                        .select('clicks_count, signups_count, earnings, wallet_address')
                         .eq('user_id', user.id)
                         .single();
 
@@ -63,8 +70,12 @@ export default function AffiliatePage() {
                             signups: affiliateData.signups_count || 0,
                             earnings: Number(affiliateData.earnings).toFixed(2)
                         });
+                        setWalletAddress(affiliateData.wallet_address || "");
                     }
                 }
+                // Fetch referral history
+                const history = await fetchReferralHistory();
+                setReferralHistory(history);
             } catch (error) {
                 console.error("Error initializing affiliate:", error);
             } finally {
@@ -74,12 +85,33 @@ export default function AffiliatePage() {
         initAffiliate();
     }, [supabase]);
 
-    const referralLink = `https://b2bleads.abaaad.net?ref=${referralCode || "......"}`;
+    const referralLink = `${origin}?ref=${referralCode || "......"}`;
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(referralLink);
         setIsCopied(true);
+        toast.success("Referral link copied!");
         setTimeout(() => setIsCopied(false), 2000);
+    };
+
+    const handleUpdateWallet = async () => {
+        setIsUpdatingWallet(true);
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) throw new Error("Not authenticated");
+
+            const { error } = await supabase
+                .from('affiliates')
+                .update({ wallet_address: walletAddress })
+                .eq('user_id', user.id);
+
+            if (error) throw error;
+            toast.success("Wallet address updated successfully!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to update wallet address");
+        } finally {
+            setIsUpdatingWallet(false);
+        }
     };
 
     if (isLoading) {
@@ -146,6 +178,41 @@ export default function AffiliatePage() {
                 ))}
             </div>
 
+            {/* Payout Settings */}
+            <div className="bg-card border border-border rounded-2xl p-8 space-y-6">
+                <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                        <DollarSign className="h-6 w-6" />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-bold text-foreground">Payout Settings</h3>
+                        <p className="text-sm text-muted-foreground">Commission is paid in USDT (BEP20/ERC20) on the 1st of every month.</p>
+                    </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row gap-4">
+                    <div className="flex-1">
+                        <label className="text-sm font-medium text-muted-foreground mb-2 block">USDT Wallet Address (BEP20/ERC20)</label>
+                        <input
+                            type="text"
+                            value={walletAddress}
+                            onChange={(e) => setWalletAddress(e.target.value)}
+                            placeholder="0x..."
+                            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-foreground focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all"
+                        />
+                    </div>
+                    <div className="flex items-end">
+                        <Button
+                            onClick={handleUpdateWallet}
+                            disabled={isUpdatingWallet}
+                            className="h-12 px-8 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl"
+                        >
+                            {isUpdatingWallet ? "Saving..." : "Save Wallet"}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
             {/* Referral History Table */}
             <div className="bg-card border border-border rounded-2xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-border flex items-center justify-between">
@@ -166,35 +233,43 @@ export default function AffiliatePage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
-                            {referralHistory.map((row, i) => (
-                                <tr key={i} className="hover:bg-muted transition-colors group">
-                                    <td className="px-6 py-4 text-sm text-foreground/80">
-                                        <div className="flex items-center gap-2">
-                                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                                            {row.date}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-foreground/80 font-medium">
-                                        {row.email}
-                                    </td>
-                                    <td className="px-6 py-4 text-sm">
-                                        <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${row.status === "Active"
-                                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                            : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                                            }`}>
-                                            {row.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-foreground font-bold">
-                                        {row.commission}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button className="text-muted-foreground group-hover:text-foreground transition-colors">
-                                            <ArrowUpRight className="h-4 w-4" />
-                                        </button>
+                            {referralHistory.length > 0 ? (
+                                referralHistory.map((row, i) => (
+                                    <tr key={i} className="hover:bg-muted transition-colors group">
+                                        <td className="px-6 py-4 text-sm text-foreground/80">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                                {row.date}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-foreground/80 font-medium">
+                                            {row.email}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm">
+                                            <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${row.status === "Active"
+                                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                                                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                                                }`}>
+                                                {row.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-foreground font-bold">
+                                            {row.commission}
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button className="text-muted-foreground group-hover:text-foreground transition-colors">
+                                                <ArrowUpRight className="h-4 w-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
+                                        No referral history yet. Share your link to start earning!
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

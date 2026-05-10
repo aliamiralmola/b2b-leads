@@ -249,8 +249,8 @@ export default function Home() {
           </h2>
           <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
             Join our Affiliate Program and earn{" "}
-            <span className="text-emerald-400 font-semibold">50% recurring commission forever</span>{" "}
-            — for every customer you refer.
+            <span className="text-emerald-400 font-semibold">40% recurring commission forever</span>{" "}
+            — for every customer you refer. Payouts are sent automatically on the 1st of every month.
           </p>
           <Link
             href="/affiliates"

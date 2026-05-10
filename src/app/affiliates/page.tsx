@@ -23,9 +23,9 @@ import {
 import { EarningsCalculator } from "@/components/EarningsCalculator";
 
 export const metadata = {
-    title: "Best B2B Affiliate Program - Earn 50% Recurring Commission",
+    title: "Best B2B Affiliate Program - Earn 40% Recurring Commission",
     description:
-        "Join the b2bleads Affiliate Program and earn 50% recurring commission forever. Promote the world's easiest B2B Lead Scraper and build passive income.",
+        "Join the b2bleads Affiliate Program and earn 40% recurring commission forever. Promote the world's easiest B2B Lead Scraper and build passive income.",
 };
 
 export default function AffiliatesPage() {
@@ -87,7 +87,7 @@ export default function AffiliatesPage() {
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-8 max-w-5xl mx-auto bg-clip-text text-transparent bg-gradient-to-b from-foreground via-foreground to-foreground/60">
                             Earn{" "}
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-300">
-                                50% Recurring
+                                40% Recurring
                             </span>{" "}
                             Commission Forever
                         </h1>
@@ -166,7 +166,7 @@ export default function AffiliatesPage() {
                                 <CardContent>
                                     <p className="text-muted-foreground leading-relaxed text-lg">
                                         Earn a flat{" "}
-                                        <span className="text-emerald-400 font-semibold">50% commission</span> on every
+                                        <span className="text-emerald-400 font-semibold">40% commission</span> on every
                                         subscription your referrals pay — not just the first month, but every single
                                         month they stay.
                                     </p>
@@ -270,7 +270,7 @@ export default function AffiliatesPage() {
                                     </div>
                                     <h3 className="text-xl font-bold text-foreground mb-3">Get Paid</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        Every time someone subscribes through your link, 50% of their payment lands in your account. Every month. Forever.
+                                        Every time someone subscribes through your link, 40% of their payment lands in your account. Every month. Forever.
                                     </p>
                                 </div>
                             </div>
@@ -343,15 +343,11 @@ export default function AffiliatesPage() {
                         <div className="flex flex-wrap justify-center gap-4">
                             <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
                                 <CreditCard className="w-4 h-4" />
-                                PayPal
+                                USDT (ERC20/TRC20)
                             </Badge>
                             <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
                                 <CreditCard className="w-4 h-4" />
-                                Payoneer
-                            </Badge>
-                            <Badge variant="outline" className="px-4 py-2 border-emerald-500/20 text-emerald-300 bg-emerald-500/5 text-sm gap-2">
-                                <Banknote className="w-4 h-4" />
-                                Wire Transfer
+                                Crypto Payouts
                             </Badge>
                         </div>
                     </div>

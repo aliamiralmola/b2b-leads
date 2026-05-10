@@ -44,6 +44,9 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { AffiliateTracker } from "@/components/AffiliateTracker";
+import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
+import { Suspense } from "react";
 
 export default function RootLayout({
   children,
@@ -60,6 +63,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Web3Provider>
+            <Suspense fallback={null}>
+              <AffiliateTracker />
+            </Suspense>
+            <GlobalLoadingIndicator />
             {children}
             <Toaster position="top-center" richColors />
           </Web3Provider>

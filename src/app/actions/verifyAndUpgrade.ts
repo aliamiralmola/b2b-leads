@@ -32,6 +32,8 @@ const PLAN_PRICES: Record<string, number> = {
     "Enterprise": 199
 };
 
+const AFFILIATE_COMMISSION_PERCENT = 0.40; // 40% commission recurring
+
 export async function verifyAndUpgrade(txHash: string, planType: string, billingCycle: 'monthly' | 'annual' = 'monthly') {
     await verifyOrigin();
     const supabase = await createClient();
@@ -126,7 +128,6 @@ export async function verifyAndUpgrade(txHash: string, planType: string, billing
                 tx_hash: txHash,
                 amount: amountReceived,
                 plan_name: planType,
-                billing_cycle: billingCycle,
                 status: 'completed'
             });
 
@@ -161,18 +162,57 @@ export async function verifyAndUpgrade(txHash: string, planType: string, billing
             return { success: false, message: "Failed to allocate credits." };
         }
 
-        // 6. Handle Affiliate
-        const cookieStore = await cookies();
-        const referralCookie = cookieStore.get('affiliate_code');
-        if (referralCookie?.value) {
-            const { data: affiliate } = await supabase.from('affiliates').select('*').eq('referral_code', referralCookie.value).single();
-            if (affiliate) {
-                const commission = amountReceived * 0.5;
-                await supabase.from('affiliates').update({
-                    earnings: (affiliate.earnings || 0) + commission,
-                    signups_count: (affiliate.signups_count || 0) + 1
-                }).eq('id', affiliate.id);
+        // 6. Handle Affiliate (Robust Recurring Logic)
+        const getAffiliateId = async () => {
+            // 1. Check if user is already linked in profile (Recurring)
+            const { data: profile } = await supabase.from('profiles').select('referred_by').eq('id', user.id).single();
+            if (profile?.referred_by) return profile.referred_by;
+
+            // 2. Check for cookie (First-time purchase)
+            const cookieStore = await cookies();
+            const referralCookie = cookieStore.get('affiliate_code');
+            if (referralCookie?.value) {
+                const { data: affiliate } = await supabase.from('affiliates').select('id').eq('referral_code', referralCookie.value).single();
+                if (affiliate) {
+                    // Permanently link this user to the affiliate for recurring payouts
+                    await supabase.from('profiles').update({ referred_by: affiliate.id }).eq('id', user.id);
+                    return affiliate.id;
+                }
             }
+            return null;
+        };
+
+        const affiliateId = await getAffiliateId();
+
+        if (affiliateId) {
+            const commission = amountReceived * AFFILIATE_COMMISSION_PERCENT;
+
+            // Atomic update for earnings
+            const { error: affiliateUpdateError } = await supabase.rpc('record_affiliate_conversion', {
+                aff_id: affiliateId,
+                commission_amount: commission
+            });
+
+            if (affiliateUpdateError) {
+                // Fallback manual increment
+                const { data: affiliate } = await supabase.from('affiliates').select('earnings').eq('id', affiliateId).single();
+                if (affiliate) {
+                    await supabase.from('affiliates').update({
+                        earnings: (affiliate.earnings || 0) + commission
+                    }).eq('id', affiliateId);
+                }
+            }
+
+            // Record the specific referral payment in the history
+            await supabase.from('referrals').insert({
+                affiliate_id: affiliateId,
+                referred_user_id: user.id,
+                referred_email: user.email,
+                plan_name: planType,
+                amount_paid: amountReceived,
+                commission: commission,
+                status: 'Active'
+            });
         }
 
         revalidatePath('/dashboard');

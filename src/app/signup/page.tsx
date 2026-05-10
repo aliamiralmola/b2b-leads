@@ -2,25 +2,109 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Zap, Rocket, CheckCircle2, ArrowRight, Loader2,
     Mail, Lock, User, ShieldCheck, Globe
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { createClient } from '@/utils/supabase/client';
 
 export default function SignupPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const router = useRouter();
+    const supabase = createClient();
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate signup logic for now (actual logic would use Supabase client)
-        setTimeout(() => {
-            toast.success("Account created! Please check your email to verify.");
+
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                    }
+                }
+            });
+
+            if (error) {
+                toast.error(error.message);
+            } else {
+                toast.success("Account created! Please check your email to verify.");
+
+                const getAffiliateCode = () => {
+                    // 1. Try Cookie
+                    const cookieMatch = document.cookie
+                        .split('; ')
+                        .find(row => row.startsWith('affiliate_code='));
+                    if (cookieMatch) return cookieMatch.split('=')[1];
+
+                    // 2. Try LocalStorage
+                    const localMatch = localStorage.getItem('affiliate_code');
+                    if (localMatch) return localMatch;
+
+                    // 3. Try SessionStorage
+                    const sessionMatch = sessionStorage.getItem('affiliate_code');
+                    if (sessionMatch) return sessionMatch;
+
+                    return null;
+                };
+
+                const refCode = getAffiliateCode();
+
+                // --- NEW: Robust Affiliate Linking & Pending Referral ---
+                if (refCode) {
+                    console.log("Signup: Processing affiliate link for refCode:", refCode);
+
+                    // 1. Get affiliate ID
+                    const { data: aff } = await supabase.from('affiliates').select('id').eq('referral_code', refCode).single();
+
+                    if (aff) {
+                        try {
+                            // 2. Insert referral record (even before fully confirmed)
+                            await supabase.from('referrals').insert({
+                                affiliate_id: aff.id,
+                                referred_email: email,
+                                status: 'Pending'
+                            });
+
+                            // 3. Increment signups count
+                            const { error: rpcError } = await supabase.rpc('increment_affiliate_signups', { code: refCode });
+                            if (rpcError) {
+                                // Fallback manual increment
+                                const { data: affData } = await supabase.from('affiliates').select('signups_count').eq('referral_code', refCode).single();
+                                if (affData) {
+                                    await supabase.from('affiliates')
+                                        .update({ signups_count: (affData.signups_count || 0) + 1 })
+                                        .eq('referral_code', refCode);
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Signup: Error recording referral:", e);
+                        }
+                    }
+                }
+                // -----------------------------------------------------
+
+                if (data?.session === null) {
+                    router.push(`/verify-notice?email=${encodeURIComponent(email)}`);
+                } else {
+                    router.push('/dashboard');
+                }
+            }
+        } catch (error: any) {
+            toast.error(error.message || "An error occurred during signup.");
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
@@ -92,8 +176,10 @@ export default function SignupPage() {
                                 <input
                                     required
                                     type="text"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                     placeholder="Enter your name"
-                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50"
+                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground"
                                 />
                             </div>
                         </div>
@@ -105,8 +191,10 @@ export default function SignupPage() {
                                 <input
                                     required
                                     type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="name@company.com"
-                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50"
+                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground"
                                 />
                             </div>
                         </div>
@@ -118,14 +206,16 @@ export default function SignupPage() {
                                 <input
                                     required
                                     type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50"
+                                    className="w-full bg-muted/50 border border-border rounded-2xl py-3 pl-12 pr-4 text-sm focus:border-indigo-500 outline-none transition-all placeholder:text-muted-foreground/50 text-foreground"
                                 />
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2 px-1">
-                            <input type="checkbox" id="terms" className="accent-indigo-500 rounded h-4 w-4" required />
+                            <input type="checkbox" id="terms" className="accent-indigo-500 rounded h-4 w-4 text-foreground" required />
                             <label htmlFor="terms" className="text-xs text-muted-foreground">
                                 I agree to the <Link href="/terms" className="text-indigo-400 hover:underline">Terms of Service</Link>
                             </label>
