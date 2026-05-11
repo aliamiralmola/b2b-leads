@@ -102,6 +102,11 @@ export async function searchLeads(
         throw new Error("Please verify your email first.");
     }
 
+    const { data: profile } = await supabase.from('profiles').select('credits').eq('id', user.id).single();
+    if (!profile || profile.credits <= 0) {
+        throw new Error("عذراً، البحث المدفوع فقط. يجب عليك الاشتراك في الباقة للتمكن من البحث واستخراج البيانات.");
+    }
+
     // 1.5 Sanitize & Validate Inputs
     const sanitizedKeyword = keyword.trim().replace(/[<>"{}()[\]]/g, "");
     if (!sanitizedKeyword) {
@@ -145,78 +150,70 @@ export async function searchLeads(
         )) || []
     );
 
-    // 4. Fetch Results from Free Engine
+    // 4. Fetch Results from Premium Engine (Apify)
     const debugLogs: string[] = [];
     debugLogs.push(`--- SCANNING WITH ENGINE ---`);
     debugLogs.push(`Keyword: ${sanitizedKeyword} | Source: ${source}`);
     
     try {
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbwkUaOrfKcAfDpVDmwsKy8QWLJfyenPgBbQREOBrDpk1fONTN7bhDK9KomSJ2Gd5oxTCg/exec";
-        const fetchUrl = `${scriptUrl}?q=${encodeURIComponent(finalQuery)}`;
+        const apifyToken = process.env.APIFY_API_TOKEN;
+        if (!apifyToken) throw new Error("Apify API Token not configured.");
+        const actorId = "compass~crawler-google-places";
+        const runUrl = `https://api.apify.com/v2/acts/${actorId}/run-sync-get-dataset-items?token=${apifyToken}`;
         
-        const response = await fetch(fetchUrl);
-        if (!response.ok) throw new Error(`Data Engine responded with status: ${response.status}`);
-        
-        const textData = await response.text();
-        let data;
-        try {
-            data = JSON.parse(textData);
-        } catch(e) {
-            throw new Error("Unexpected data format from engine.");
+        debugLogs.push(`Calling Apify actor: ${actorId}`);
+        const response = await fetch(runUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                searchStringsArray: [finalQuery],
+                maxCrawledPlacesPerSearch: requestedLimit || 20,
+                language: "en"
+            })
+        });
+
+        if (!response.ok) {
+             const errText = await response.text();
+             throw new Error(`Apify responded with status: ${response.status}. Details: ${errText}`);
         }
+        
+        let data = await response.json();
         
         if (!Array.isArray(data)) data = [];
         
         if (data.length === 0) {
-            debugLogs.push(`WARNING: Free engine returned 0 results. No more fallback available.`);
+            debugLogs.push(`WARNING: Premium engine returned 0 results.`);
         }
 
         // 5. Smart Filtering & Professional Mapping
         const formattedLeads = data
-            .filter(item => isLikelyLead(item))
             .map((item: any, idx: number) => {
-                const title = item.title || "N/A";
-                const snippet = item.snippet || "";
-                const website = item.link || "";
+                const title = item.title || item.name || "N/A";
+                const website = item.website || item.url || "";
+                const phone = item.phoneUnformatted || item.phone || "N/A";
+                const email = item.email || null;
                 
-                // Deep extraction from title and snippet
-                const email = extractEmail(title + " " + snippet);
-                const phone = extractPhone(title + " " + snippet);
-                
-                // Enhanced social detection
-                const combinedText = (title + " " + snippet + " " + website).toLowerCase();
-                const socials = {
-                    linkedin: website.includes("linkedin.com") ? website : (combinedText.match(/linkedin\.com\/(?:in|company)\/[a-z0-9-_]+/i) || [null])[0],
-                    facebook: website.includes("facebook.com") ? website : (combinedText.match(/facebook\.com\/[a-z0-9._-]+/i) || [null])[0],
-                    instagram: website.includes("instagram.com") ? website : (combinedText.match(/instagram\.com\/[a-z0-9._-]+/i) || [null])[0],
-                    twitter: website.includes("twitter.com") ? website : (combinedText.match(/twitter\.com\/[a-z0-9._-]+/i) || [null])[0],
-                };
-
-                // Dynamic Quality Scoring (replacing static 5)
                 let qualityScore = 40;
                 if (email) qualityScore += 20;
-                if (phone) qualityScore += 20;
+                if (phone !== "N/A") qualityScore += 20;
                 if (website && !website.includes("google.com")) qualityScore += 10;
-                if (socials.linkedin || socials.facebook) qualityScore += 10;
-
-                const rating = Number((qualityScore / 20).toFixed(1)); // Normalize to 0-5.0
-
+                
                 return {
                     id: `fs-${Math.random().toString(36).substr(2, 9)}-${idx}`,
-                    name: title.replace(/ \- .*$/, "").replace(/\| .*$/, "").trim(),
-                    address: locationQuery || "United States",
-                    phone: phone || "N/A",
-                    website,
-                    email,
-                    socials,
-                    rating,
-                    reviews: Math.floor(Math.random() * 80) + 20, // Realism
+                    name: title,
+                    address: item.address || locationQuery || "United States",
+                    phone: phone,
+                    website: website,
+                    email: email,
+                    socials: { linkedin: null, facebook: null, instagram: null, twitter: null },
+                    rating: item.totalScore || 0,
+                    reviews: item.reviewsCount || 0,
                     industry: sanitizedKeyword,
                     quality_score: qualityScore,
-                    ai_insight: `Verified Lead via Deep Search (Stable Engine).`,
-                    lat: null,
-                    lng: null,
-                    is_verified: !!(email || phone),
+                    ai_insight: `Verified Lead via Premium Search.`,
+                    lat: item.location?.lat || null,
+                    lng: item.location?.lng || null,
+                    is_verified: !!(email || phone !== "N/A"),
                 };
             });
 
@@ -250,9 +247,13 @@ export async function searchLeads(
             debugLogs.push(`History recorded successfully.`);
         }
 
+        // Deduct 1 credit for the search
+        const newCredits = Math.max(0, profile.credits - 1);
+        await supabase.from('profiles').update({ credits: newCredits }).eq('id', user.id);
+
         return {
             leads: deduplicatedLeads,
-            creditsRemaining: 9999, // FREE ENGINE, infinite credits displayed
+            creditsRemaining: newCredits,
             duplicateCount: duplicateCount,
             debugLogs: debugLogs
         };
