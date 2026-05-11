@@ -805,12 +805,7 @@ export default function SearchPage() {
                     </div>
                 </div>
 
-                {debugLogs.length > 0 && (
-                    <div className="mx-6 mb-6 p-4 bg-black/90 text-green-400 font-mono text-[10px] rounded-xl overflow-y-auto max-h-[300px] border border-green-500/30 whitespace-pre-wrap">
-                        <div className="font-bold text-white mb-2 pb-2 border-b border-white/20">DEBUG LOGS (DEVELOPMENT ONLY):</div>
-                        {debugLogs.join('\n')}
-                    </div>
-                )}
+
 
                 <div className="min-h-[500px] relative">
                     {viewMode === "table" ? (
